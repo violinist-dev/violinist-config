@@ -27,10 +27,9 @@ class Config
     public static function createFromComposerData($data)
     {
         $instance = new self();
-        if (empty($data->extra->violinist)) {
-            return;
+        if (!empty($data->extra->violinist)) {
+            $instance->setConfig($data->extra->violinist);
         }
-        $instance->setConfig($data->extra->violinist);
         return $instance;
     }
 
