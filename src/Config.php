@@ -15,6 +15,7 @@ class Config
     {
         return (object) [
             'update_dev_dependencies' => 1,
+            'blacklist' => [],
             'assignees' => [],
             'allow_updates_beyond_constraint' => 1,
             'one_pull_request_per_package' => 0,
@@ -40,6 +41,11 @@ class Config
                 $this->config->{$key} = $config->{$key};
             }
         }
+    }
+
+    public function getBlackList()
+    {
+        return $this->config->blacklist;
     }
 
     public function shouldUpdateDevDependencies()
