@@ -22,6 +22,7 @@ class Config
             'timeframe_disallowed' => 0,
             'timezone' => '+0000',
             'update_with_dependencies' => 1,
+            'default_branch' => '',
         ];
     }
 
@@ -51,5 +52,13 @@ class Config
     public function shouldUpdateDevDependencies()
     {
         return (bool) $this->config->update_dev_dependencies;
+    }
+
+    public function getDefaultBranch()
+    {
+        if (empty($this->config->default_branch)) {
+            return false;
+        }
+        return $this->config->default_branch;
     }
 }
