@@ -15,6 +15,7 @@ class Config
     {
         return (object) [
             'update_dev_dependencies' => 1,
+            'bundled_packages' => (object) [],
             'blacklist' => [],
             'assignees' => [],
             'allow_updates_beyond_constraint' => 1,
@@ -42,6 +43,21 @@ class Config
                 $this->config->{$key} = $config->{$key};
             }
         }
+    }
+
+
+    public function getBundledPackagesForPackage($package_name)
+    {
+        foreach ($this->config->bundled_packages as $package => $bundle) {
+            if ($package === $package_name) {
+                if (!is_array($bundle)) {
+                    throw new \Exception('Found bundle for ' . $package . ' but the bundle was not an array');
+                }
+                return $bundle;
+            }
+
+        }
+        return [];
     }
 
     public function getBlackList()
