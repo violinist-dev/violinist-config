@@ -24,6 +24,7 @@ class Config
             'timezone' => '+0000',
             'update_with_dependencies' => 1,
             'default_branch' => '',
+            'run_scripts' => 1,
         ];
     }
 
@@ -43,6 +44,11 @@ class Config
                 $this->config->{$key} = $config->{$key};
             }
         }
+    }
+
+    public function shouldRunScripts()
+    {
+        return (bool) $this->config->run_scripts;
     }
 
 
