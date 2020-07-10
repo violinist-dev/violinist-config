@@ -25,6 +25,8 @@ class Config
             'update_with_dependencies' => 1,
             'default_branch' => '',
             'run_scripts' => 1,
+            'security_updates_only' => 0,
+            'number_of_concurrent_updates' => 0,
         ];
     }
 
@@ -74,6 +76,16 @@ class Config
     public function shouldUpdateDevDependencies()
     {
         return (bool) $this->config->update_dev_dependencies;
+    }
+
+    public function getNumberOfAllowedPrs()
+    {
+        return (int) $this->config->number_of_concurrent_updates;
+    }
+
+    public function shouldOnlyUpdateSecurityUpdates()
+    {
+        return (bool) $this->config->security_updates_only;
     }
 
     public function getDefaultBranch()
