@@ -15,6 +15,7 @@ class Config
     {
         return (object) [
             'update_dev_dependencies' => 1,
+            'check_only_direct_dependencies' => 1,
             'bundled_packages' => (object) [],
             'blacklist' => [],
             'assignees' => [],
@@ -94,5 +95,10 @@ class Config
             return false;
         }
         return $this->config->default_branch;
+    }
+
+    public function shouldCheckDirectOnly()
+    {
+        return (bool) $this->config->check_only_direct_dependencies;
     }
 }
