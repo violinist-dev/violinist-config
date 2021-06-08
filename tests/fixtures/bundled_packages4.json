@@ -1,0 +1,11 @@
+{
+  "extra": {
+    "violinist": {
+      "bundled_packages": {
+        "psr/log": [
+          "symfony/console"
+        ]
+      }
+    }
+  }
+}
