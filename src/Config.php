@@ -88,7 +88,7 @@ class Config
      */
     public function getBlackList()
     {
-        return $this->config->blacklist;
+        return $this->getBlockList();
     }
 
     public function shouldUpdateDevDependencies()
