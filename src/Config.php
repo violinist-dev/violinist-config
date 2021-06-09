@@ -64,7 +64,6 @@ class Config
                 }
                 return $bundle;
             }
-
         }
         return [];
     }

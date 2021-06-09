@@ -44,7 +44,6 @@ class UnitTest extends TestCase
             $this->expectExceptionMessage('Found bundle for psr/log but the bundle was not an array');
         }
         self::assertEquals($expected_result, $data->getBundledPackagesForPackage('psr/log'));
-
     }
 
     protected function createDataFromFixture($filename)
@@ -139,5 +138,4 @@ class UnitTest extends TestCase
             ]
         ];
     }
-
 }
