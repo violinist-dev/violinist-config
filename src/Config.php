@@ -73,6 +73,9 @@ class Config
 
     public function getBlackList()
     {
+        if (!is_array($this->config->blacklist)) {
+            return [];
+        }
         return $this->config->blacklist;
     }
 
