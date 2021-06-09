@@ -55,6 +55,7 @@ class UnitTest extends TestCase
     {
         $data = $this->createDataFromFixture($filename);
         self::assertEquals($expected_result, $data->getBlackList());
+        self::assertEquals($expected_result, $data->getBlockList());
     }
 
     protected function createDataFromFixture($filename)
