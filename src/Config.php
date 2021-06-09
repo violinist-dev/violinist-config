@@ -66,6 +66,9 @@ class Config
 
     public function getBundledPackagesForPackage($package_name)
     {
+        if (!is_object($this->config->bundled_packages)) {
+            return [];
+        }
         foreach ($this->config->bundled_packages as $package => $bundle) {
             if ($package === $package_name) {
                 if (!is_array($bundle)) {
@@ -73,13 +76,16 @@ class Config
                 }
                 return $bundle;
             }
-
         }
         return [];
     }
 
     public function getBlockList()
     {
+        if (!is_array($this->config->blocklist)) {
+            return [];
+        }
+
         return $this->config->blocklist;
     }
 
