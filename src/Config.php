@@ -17,7 +17,7 @@ class Config
             'update_dev_dependencies' => 1,
             'check_only_direct_dependencies' => 1,
             'bundled_packages' => (object) [],
-            'blacklist' => [],
+            'blocklist' => [],
             'assignees' => [],
             'allow_updates_beyond_constraint' => 1,
             'one_pull_request_per_package' => 0,
@@ -47,6 +47,15 @@ class Config
                 $this->config->{$key} = $config->{$key};
             }
         }
+        // Also make sure to set the block list config from the deprecated part.
+        $renamed = [
+            'blacklist' => 'blocklist',
+        ] ;
+        foreach ($renamed as $old => $new) {
+            if (isset($config->{$old})) {
+                $this->config->{$new} = $config->{$old};
+            }
+        }
     }
 
     public function shouldRunScripts()
@@ -71,12 +80,21 @@ class Config
         return [];
     }
 
-    public function getBlackList()
+    public function getBlockList()
     {
-        if (!is_array($this->config->blacklist)) {
+        if (!is_array($this->config->blocklist)) {
             return [];
         }
-        return $this->config->blacklist;
+
+        return $this->config->blocklist;
+    }
+
+    /**
+     * @deprecated Use ::getBlockList instead.
+     */
+    public function getBlackList()
+    {
+        return $this->getBlockList();
     }
 
     public function shouldUpdateDevDependencies()

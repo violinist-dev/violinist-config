@@ -55,6 +55,7 @@ class UnitTest extends TestCase
     {
         $data = $this->createDataFromFixture($filename);
         self::assertEquals($expected_result, $data->getBlackList());
+        self::assertEquals($expected_result, $data->getBlockList());
     }
 
     protected function createDataFromFixture($filename)
@@ -169,6 +170,27 @@ class UnitTest extends TestCase
             ],
             [
                 'blocklist4.json',
+                [
+                    "package1",
+                    "vendor/*"
+                ],
+            ],
+            [
+                'blocklist5.json',
+                [],
+            ],
+            [
+                'blocklist6.json',
+                [
+                    "package1"
+                ],
+            ],
+            [
+                'blocklist7.json',
+                [],
+            ],
+            [
+                'blocklist8.json',
                 [
                     "package1",
                     "vendor/*"
