@@ -1,0 +1,7 @@
+{
+  "extra": {
+    "violinist": {
+      "blacklist": "should_be_array"
+    }
+  }
+}

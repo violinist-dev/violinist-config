@@ -46,6 +46,17 @@ class UnitTest extends TestCase
         self::assertEquals($expected_result, $data->getBundledPackagesForPackage('psr/log'));
     }
 
+    /**
+     * Test the blacklist config option.
+     *
+     * @dataProvider getBlackList
+     */
+    public function testBlackList($filename, $expected_result)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($expected_result, $data->getBlackList());
+    }
+
     protected function createDataFromFixture($filename)
     {
         $file_contents = json_decode(file_get_contents(__DIR__ . '/fixtures/' . $filename));
@@ -136,6 +147,33 @@ class UnitTest extends TestCase
                 [],
                 true
             ]
+        ];
+    }
+
+    public function getBlackList()
+    {
+        return [
+            [
+                'blocklist.json',
+                [],
+            ],
+            [
+                'blocklist2.json',
+                [
+                    "package1"
+                ],
+            ],
+            [
+                'blocklist3.json',
+                [],
+            ],
+            [
+                'blocklist4.json',
+                [
+                    "package1",
+                    "vendor/*"
+                ],
+            ],
         ];
     }
 }
