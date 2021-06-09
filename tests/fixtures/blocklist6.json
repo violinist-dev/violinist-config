@@ -1,0 +1,9 @@
+{
+  "extra": {
+    "violinist": {
+      "blocklist": [
+        "package1"
+      ]
+    }
+  }
+}

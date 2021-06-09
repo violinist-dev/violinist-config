@@ -175,6 +175,27 @@ class UnitTest extends TestCase
                     "vendor/*"
                 ],
             ],
+            [
+                'blocklist5.json',
+                [],
+            ],
+            [
+                'blocklist6.json',
+                [
+                    "package1"
+                ],
+            ],
+            [
+                'blocklist7.json',
+                [],
+            ],
+            [
+                'blocklist8.json',
+                [
+                    "package1",
+                    "vendor/*"
+                ],
+            ],
         ];
     }
 }
