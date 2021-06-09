@@ -1,0 +1,10 @@
+{
+  "extra": {
+    "violinist": {
+      "blacklist": [
+        "package1",
+        "vendor/*"
+      ]
+    }
+  }
+}

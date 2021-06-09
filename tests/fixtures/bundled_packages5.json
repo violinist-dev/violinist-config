@@ -1,0 +1,9 @@
+{
+  "extra": {
+    "violinist": {
+      "bundled_packages": {
+        "psr/log": true
+      }
+    }
+  }
+}
