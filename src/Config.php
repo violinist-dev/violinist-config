@@ -57,6 +57,9 @@ class Config
 
     public function getBundledPackagesForPackage($package_name)
     {
+        if (!is_object($this->config->bundled_packages)) {
+            return [];
+        }
         foreach ($this->config->bundled_packages as $package => $bundle) {
             if ($package === $package_name) {
                 if (!is_array($bundle)) {
