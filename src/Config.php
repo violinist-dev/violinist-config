@@ -28,6 +28,7 @@ class Config
             'run_scripts' => 1,
             'security_updates_only' => 0,
             'number_of_concurrent_updates' => 0,
+            'branch_prefix' => '',
         ];
     }
 
@@ -123,5 +124,16 @@ class Config
     public function shouldCheckDirectOnly()
     {
         return (bool) $this->config->check_only_direct_dependencies;
+    }
+
+    public function getBranchPrefix()
+    {
+        if ($this->config->branch_prefix) {
+            if (!is_string($this->config->branch_prefix)) {
+                return '';
+            }
+            return (string) $this->config->branch_prefix;
+        }
+        return '';
     }
 }

@@ -58,10 +58,43 @@ class UnitTest extends TestCase
         self::assertEquals($expected_result, $data->getBlockList());
     }
 
+    /**
+     * Test the blacklist config option.
+     *
+     * @dataProvider getBranchPrefix
+     */
+    public function testBranchPrefix($filename, $expected_result)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($expected_result, $data->getBranchPrefix());
+    }
+
     protected function createDataFromFixture($filename)
     {
         $file_contents = json_decode(file_get_contents(__DIR__ . '/fixtures/' . $filename));
         return Config::createFromComposerData($file_contents);
+    }
+
+    public function getBranchPrefix()
+    {
+        return [
+            [
+                'prefix.json',
+                '',
+            ],
+            [
+                'prefix2.json',
+                '',
+            ],
+            [
+                'prefix3.json',
+                '',
+            ],
+            [
+                'prefix4.json',
+                'my_prefix',
+            ],
+        ];
     }
 
     /**
