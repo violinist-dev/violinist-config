@@ -1,6 +1,9 @@
 {
   "extra": {
     "violinist": {
+      "commit_message_convention": [
+        "conventional"
+      ]
     }
   }
 }

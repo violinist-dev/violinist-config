@@ -80,6 +80,50 @@ class UnitTest extends TestCase
         self::assertEquals($expected_result, $data->getCommitMessageConvention());
     }
 
+    /**
+     * Test the default branch config option.
+     *
+     * @dataProvider getDefaultBranch
+     */
+    public function testDefaultBranch($filename, $expected_result)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($expected_result, $data->getDefaultBranch());
+    }
+
+    /**
+     * Test the update dev dependencies config option.
+     *
+     * @dataProvider getUpdateDevDependencies
+     */
+    public function testUpdateDevDependencies($filename, $expected_result)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($expected_result, $data->shouldUpdateDevDependencies());
+    }
+
+    /**
+     * Test the security updates config option.
+     *
+     * @dataProvider getSecurityUpdates
+     */
+    public function testSecurityUpdates($filename, $expected_result)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($expected_result, $data->shouldOnlyUpdateSecurityUpdates());
+    }
+
+    /**
+     * Test the only direct dependencies config option.
+     *
+     * @dataProvider getOnlyDirectDependencies
+     */
+    public function testOnlyDirectDependencies($filename, $expected_result)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($expected_result, $data->shouldCheckDirectOnly());
+    }
+
     protected function createDataFromFixture($filename)
     {
         $file_contents = json_decode(file_get_contents(__DIR__ . '/fixtures/' . $filename));
@@ -112,6 +156,10 @@ class UnitTest extends TestCase
     {
         return [
             [
+                'empty.json',
+                '',
+            ],
+            [
                 'commit_message.json',
                 '',
             ],
@@ -121,10 +169,6 @@ class UnitTest extends TestCase
             ],
             [
                 'commit_message3.json',
-                '',
-            ],
-            [
-                'commit_message4.json',
                 'conventional',
             ],
         ];
@@ -261,6 +305,138 @@ class UnitTest extends TestCase
                     "package1",
                     "vendor/*"
                 ],
+            ],
+        ];
+    }
+
+    public function getDefaultBranch()
+    {
+        return [
+            [
+                'empty.json',
+                '',
+            ],
+            [
+                'default_branch.json',
+                '',
+            ],
+            [
+                'default_branch2.json',
+                'develop',
+            ],
+        ];
+    }
+
+    public function getUpdateDevDependencies()
+    {
+        return [
+            [
+                'update_dev_dependencies.json',
+                true,
+            ],
+            [
+                'update_dev_dependencies2.json',
+                true,
+            ],
+            [
+                'update_dev_dependencies3.json',
+                true,
+            ],
+            [
+                'update_dev_dependencies4.json',
+                false,
+            ],
+            [
+                'update_dev_dependencies5.json',
+                true,
+            ],
+            [
+                'update_dev_dependencies6.json',
+                true,
+            ],
+            [
+                'update_dev_dependencies7.json',
+                true,
+            ],
+            [
+                'empty.json',
+                true,
+            ],
+        ];
+    }
+
+    public function getSecurityUpdates()
+    {
+        return [
+            [
+                'security_updates_only.json',
+                true,
+            ],
+            [
+                'security_updates_only2.json',
+                true,
+            ],
+            [
+                'security_updates_only3.json',
+                true,
+            ],
+            [
+                'security_updates_only4.json',
+                false,
+            ],
+            [
+                'security_updates_only5.json',
+                true,
+            ],
+            [
+                'security_updates_only6.json',
+                true,
+            ],
+            [
+                'security_updates_only7.json',
+                true,
+            ],
+            [
+                'empty.json',
+                false,
+            ],
+        ];
+    }
+
+    public function getOnlyDirectDependencies()
+    {
+        return [
+            [
+                'check_only_direct_dependencies.json',
+                true,
+            ],
+            [
+                'check_only_direct_dependencies2.json',
+                true,
+            ],
+            [
+                'check_only_direct_dependencies3.json',
+                true,
+            ],
+            [
+                'check_only_direct_dependencies4.json',
+                false,
+            ],
+            [
+                'check_only_direct_dependencies5.json',
+                true,
+            ],
+            [
+                'check_only_direct_dependencies6.json',
+                true,
+            ],
+            [
+                'check_only_direct_dependencies7.json',
+                true,
+            ],
+            [
+                'empty.json',
+                true,
             ],
         ];
     }
