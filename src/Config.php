@@ -29,6 +29,7 @@ class Config
             'security_updates_only' => 0,
             'number_of_concurrent_updates' => 0,
             'branch_prefix' => '',
+            'commit_message_convention' => '',
         ];
     }
 
@@ -135,5 +136,14 @@ class Config
             return (string) $this->config->branch_prefix;
         }
         return '';
+    }
+
+    public function getCommitMessageConvention()
+    {
+        if (!$this->config->commit_message_convention || !is_string($this->config->commit_message_convention)) {
+            return '';
+        }
+
+        return $this->config->commit_message_convention;
     }
 }

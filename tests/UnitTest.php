@@ -59,7 +59,7 @@ class UnitTest extends TestCase
     }
 
     /**
-     * Test the blacklist config option.
+     * Test the branch prefix config option.
      *
      * @dataProvider getBranchPrefix
      */
@@ -67,6 +67,17 @@ class UnitTest extends TestCase
     {
         $data = $this->createDataFromFixture($filename);
         self::assertEquals($expected_result, $data->getBranchPrefix());
+    }
+
+    /**
+     * Test the commit message convention config option.
+     *
+     * @dataProvider getCommitMessage
+     */
+    public function testCommitMessage($filename, $expected_result)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($expected_result, $data->getCommitMessageConvention());
     }
 
     protected function createDataFromFixture($filename)
@@ -93,6 +104,28 @@ class UnitTest extends TestCase
             [
                 'prefix4.json',
                 'my_prefix',
+            ],
+        ];
+    }
+
+    public function getCommitMessage()
+    {
+        return [
+            [
+                'commit_message.json',
+                '',
+            ],
+            [
+                'commit_message2.json',
+                '',
+            ],
+            [
+                'commit_message3.json',
+                '',
+            ],
+            [
+                'commit_message4.json',
+                'conventional',
             ],
         ];
     }
