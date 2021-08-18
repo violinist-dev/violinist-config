@@ -1,0 +1,7 @@
+{
+  "extra": {
+    "violinist": {
+      "check_only_direct_dependencies": true
+    }
+  }
+}

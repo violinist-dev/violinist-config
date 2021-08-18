@@ -1,0 +1,9 @@
+{
+  "extra": {
+    "violinist": {
+      "update_dev_dependencies": [
+        "update"
+      ]
+    }
+  }
+}
