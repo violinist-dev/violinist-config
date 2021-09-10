@@ -94,6 +94,15 @@ class Config
         return $this->config->blocklist;
     }
 
+    public function getAllowList()
+    {
+        if (!is_array($this->config->allow_list)) {
+            return [];
+        }
+
+        return $this->config->allow_list;
+    }
+
     /**
      * @deprecated Use ::getBlockList instead.
      */
