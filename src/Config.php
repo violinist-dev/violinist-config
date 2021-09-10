@@ -14,6 +14,7 @@ class Config
     public function getDefaultConfig()
     {
         return (object) [
+            'allow_list' => [],
             'update_dev_dependencies' => 1,
             'check_only_direct_dependencies' => 1,
             'bundled_packages' => (object) [],
@@ -50,8 +51,10 @@ class Config
             }
         }
         // Also make sure to set the block list config from the deprecated part.
-        $renamed = [
+        $renamed_and_aliased = [
             'blacklist' => 'blocklist',
+            'block_list' => 'blocklist',
+            'allowlist' => 'allow_list',
         ] ;
         foreach ($renamed as $old => $new) {
             if (isset($config->{$old})) {
