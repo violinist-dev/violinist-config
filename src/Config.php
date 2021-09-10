@@ -58,7 +58,7 @@ class Config
         ] ;
         foreach ($renamed_and_aliased as $not_real => $real) {
             if (isset($config->{$not_real})) {
-                $this->config->{$not_real} = $config->{$real};
+                $this->config->{$real} = $config->{$not_real};
             }
         }
     }
