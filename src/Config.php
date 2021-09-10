@@ -56,9 +56,9 @@ class Config
             'block_list' => 'blocklist',
             'allowlist' => 'allow_list',
         ] ;
-        foreach ($renamed as $old => $new) {
-            if (isset($config->{$old})) {
-                $this->config->{$new} = $config->{$old};
+        foreach ($renamed_and_aliased as $not_real => $real) {
+            if (isset($config->{$not_real})) {
+                $this->config->{$not_real} = $config->{$real};
             }
         }
     }
