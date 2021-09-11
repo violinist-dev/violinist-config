@@ -1,0 +1,9 @@
+{
+  "extra": {
+    "violinist": {
+      "allow_list": [
+        "vendor/package"
+      ]
+    }
+  }
+}

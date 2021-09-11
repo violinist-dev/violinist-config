@@ -59,6 +59,17 @@ class UnitTest extends TestCase
     }
 
     /**
+     * Test the allow list config option.
+     *
+     * @dataProvider getAllowList
+     */
+    public function testAllowList($filename, $expected_result)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($expected_result, $data->getAllowList());
+    }
+
+    /**
      * Test the branch prefix config option.
      *
      * @dataProvider getBranchPrefix
@@ -258,6 +269,32 @@ class UnitTest extends TestCase
                 [],
                 true
             ]
+        ];
+    }
+
+    public function getAllowList()
+    {
+        return [
+            [
+                'allow_list.json',
+                [],
+            ],
+            [
+                'allow_list2.json',
+                [
+                    "vendor/package"
+                ],
+            ],
+            [
+                'allow_list3.json',
+                [
+                    "vendor/package"
+                ],
+            ],
+            [
+                'empty.json',
+                [],
+            ],
         ];
     }
 

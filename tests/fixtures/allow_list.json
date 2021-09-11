@@ -1,0 +1,7 @@
+{
+  "extra": {
+    "violinist": {
+      "allow_list": "should_be_array"
+    }
+  }
+}

@@ -14,6 +14,7 @@ class Config
     public function getDefaultConfig()
     {
         return (object) [
+            'allow_list' => [],
             'update_dev_dependencies' => 1,
             'check_only_direct_dependencies' => 1,
             'bundled_packages' => (object) [],
@@ -50,12 +51,14 @@ class Config
             }
         }
         // Also make sure to set the block list config from the deprecated part.
-        $renamed = [
+        $renamed_and_aliased = [
             'blacklist' => 'blocklist',
+            'block_list' => 'blocklist',
+            'allowlist' => 'allow_list',
         ] ;
-        foreach ($renamed as $old => $new) {
-            if (isset($config->{$old})) {
-                $this->config->{$new} = $config->{$old};
+        foreach ($renamed_and_aliased as $not_real => $real) {
+            if (isset($config->{$not_real})) {
+                $this->config->{$real} = $config->{$not_real};
             }
         }
     }
@@ -89,6 +92,15 @@ class Config
         }
 
         return $this->config->blocklist;
+    }
+
+    public function getAllowList()
+    {
+        if (!is_array($this->config->allow_list)) {
+            return [];
+        }
+
+        return $this->config->allow_list;
     }
 
     /**
