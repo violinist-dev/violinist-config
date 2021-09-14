@@ -126,6 +126,17 @@ class UnitTest extends TestCase
     }
 
     /**
+     * Test the allow_updates_beyond_constraint option.
+     *
+     * @dataProvider getUpdatesBeyondConstraint
+     */
+    public function testUpdatesBeyondConstraint($filename, $expected_result)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($expected_result, $data->shouldAllowUpdatesBeyondConstraint());
+    }
+
+    /**
      * Test the security updates config option.
      *
      * @dataProvider getSecurityUpdates
@@ -162,6 +173,32 @@ class UnitTest extends TestCase
     {
         $file_contents = json_decode(file_get_contents(__DIR__ . '/fixtures/' . $filename));
         return Config::createFromComposerData($file_contents);
+    }
+
+    public function getUpdatesBeyondConstraint()
+    {
+        return [
+            [
+                'empty.json',
+                true,
+            ],
+            [
+                'allow_updates_beyond_constraint.json',
+                true,
+            ],
+            [
+                'allow_updates_beyond_constraint2.json',
+                false,
+            ],
+            [
+                'allow_updates_beyond_constraint3.json',
+                true,
+            ],
+            [
+                'allow_updates_beyond_constraint4.json',
+                false,
+            ],
+        ];
     }
 
     public function getOnePrPerPackage()

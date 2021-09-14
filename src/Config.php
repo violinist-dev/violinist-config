@@ -63,6 +63,11 @@ class Config
         }
     }
 
+    public function shouldAllowUpdatesBeyondConstraint()
+    {
+        return (bool) $this->config->allow_updates_beyond_constraint;
+    }
+
     public function shouldRunScripts()
     {
         return (bool) $this->config->run_scripts;
