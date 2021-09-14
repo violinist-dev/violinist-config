@@ -94,6 +94,19 @@ class Config
         return $this->config->assignees;
     }
 
+    /**
+     * Just an alias, since providers differ in their wording on this.
+     */
+    public function shouldUseOneMergeRequestPerPackage()
+    {
+        return $this->shouldUseOnePullRequestPerPackage();
+    }
+
+    public function shouldUseOnePullRequestPerPackage()
+    {
+        return (bool) $this->config->one_pull_request_per_package;
+    }
+
     public function getBlockList()
     {
         if (!is_array($this->config->blocklist)) {
