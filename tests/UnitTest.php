@@ -140,7 +140,8 @@ class UnitTest extends TestCase
      *
      * @dataProvider getAssignees
      */
-    public function testAssignees($filename, $expected_reesult) {
+    public function testAssignees($filename, $expected_reesult)
+    {
         $data = $this->createDataFromFixture($filename);
         self::assertEquals($expected_reesult, $data->getAssignees());
     }
@@ -151,7 +152,8 @@ class UnitTest extends TestCase
         return Config::createFromComposerData($file_contents);
     }
 
-    public function getAssignees() {
+    public function getAssignees()
+    {
         return [
             [
                 'empty.json',

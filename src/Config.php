@@ -91,7 +91,7 @@ class Config
             return [];
         }
 
-      return $this->config->assignees;
+        return $this->config->assignees;
     }
 
     public function getBlockList()
