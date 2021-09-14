@@ -135,10 +135,45 @@ class UnitTest extends TestCase
         self::assertEquals($expected_result, $data->shouldCheckDirectOnly());
     }
 
+    /**
+     * Test the assignees part.
+     *
+     * @dataProvider getAssignees
+     */
+    public function testAssignees($filename, $expected_reesult)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($expected_reesult, $data->getAssignees());
+    }
+
     protected function createDataFromFixture($filename)
     {
         $file_contents = json_decode(file_get_contents(__DIR__ . '/fixtures/' . $filename));
         return Config::createFromComposerData($file_contents);
+    }
+
+    public function getAssignees()
+    {
+        return [
+            [
+                'empty.json',
+                [],
+            ],
+            [
+                'assignees.json',
+                [],
+            ],
+            [
+                'assignees2.json',
+                [],
+            ],
+            [
+                'assignees3.json',
+                [
+                    "test_user"
+                ],
+            ],
+        ];
     }
 
     public function getBranchPrefix()
