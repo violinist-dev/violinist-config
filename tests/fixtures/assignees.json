@@ -1,0 +1,7 @@
+{
+  "extra": {
+    "violinist": {
+      "assignees": "should_be_array"
+    }
+  }
+}
