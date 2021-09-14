@@ -63,6 +63,11 @@ class Config
         }
     }
 
+    public function shouldUpdateWithDependencies()
+    {
+        return (bool) $this->config->update_with_dependencies;
+    }
+
     public function shouldAllowUpdatesBeyondConstraint()
     {
         return (bool) $this->config->allow_updates_beyond_constraint;

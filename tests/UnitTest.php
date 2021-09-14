@@ -126,6 +126,17 @@ class UnitTest extends TestCase
     }
 
     /**
+     * Test the update_with_dependencies option.
+     *
+     * @dataProvider getUpdateWithDeps
+     */
+    public function testUpdateWithDeps($filename, $expected_result)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($expected_result, $data->shouldUpdateWithDependencies());
+    }
+
+    /**
      * Test the allow_updates_beyond_constraint option.
      *
      * @dataProvider getUpdatesBeyondConstraint
@@ -173,6 +184,32 @@ class UnitTest extends TestCase
     {
         $file_contents = json_decode(file_get_contents(__DIR__ . '/fixtures/' . $filename));
         return Config::createFromComposerData($file_contents);
+    }
+
+    public function getUpdateWithDeps()
+    {
+        return [
+            [
+                'empty.json',
+                true,
+            ],
+            [
+                'update_with_dependencies.json',
+                true,
+            ],
+            [
+                'update_with_dependencies2.json',
+                false,
+            ],
+            [
+                'update_with_dependencies3.json',
+                true,
+            ],
+            [
+                'update_with_dependencies4.json',
+                false,
+            ],
+        ];
     }
 
     public function getUpdatesBeyondConstraint()
