@@ -92,6 +92,28 @@ class UnitTest extends TestCase
     }
 
     /**
+     * Test the timezone option.
+     *
+     * @dataProvider getTimezone
+     */
+    public function testTimezone($filename, $expected_result)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($expected_result, $data->getTimeZone());
+    }
+
+    /**
+     * Test the timeframe_disallowed option.
+     *
+     * @dataProvider getTimeframes
+     */
+    public function testTimeframeDisallowed($filename, $expected_result)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($expected_result, $data->getTimeFrameDisallowed());
+    }
+
+    /**
      * Test the default branch config option.
      *
      * @dataProvider getDefaultBranch
@@ -306,6 +328,58 @@ class UnitTest extends TestCase
             [
                 'prefix4.json',
                 'my_prefix',
+            ],
+        ];
+    }
+
+    public function getTimeframes()
+    {
+        return [
+            [
+                'empty.json',
+                '',
+            ],
+            [
+                'timeframe_disallowed.json',
+                '12-14',
+            ],
+            [
+                'timeframe_disallowed2.json',
+                '',
+            ],
+            [
+                'timeframe_disallowed3.json',
+                '',
+            ],
+            [
+                'timeframe_disallowed4.json',
+                'does not really work, but value allowed',
+            ],
+        ];
+    }
+
+    public function getTimezone()
+    {
+        return [
+            [
+                'empty.json',
+                '+0000',
+            ],
+            [
+                'timezone.json',
+                '+0000',
+            ],
+            [
+                'timezone2.json',
+                '+0000',
+            ],
+            [
+                'timezone3.json',
+                '+0000',
+            ],
+            [
+                'timezone4.json',
+                'Europe/Berlin',
             ],
         ];
     }

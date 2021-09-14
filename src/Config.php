@@ -63,6 +63,28 @@ class Config
         }
     }
 
+    public function getTimeZone()
+    {
+        if (!is_string($this->config->timezone)) {
+            return '+0000';
+        }
+        if (empty($this->config->timezone)) {
+            return '+0000';
+        }
+        return $this->config->timezone;
+    }
+
+    public function getTimeFrameDisallowed()
+    {
+        if (!is_string($this->config->timeframe_disallowed)) {
+            return '';
+        }
+        if (empty($this->config->timeframe_disallowed)) {
+            return '';
+        }
+        return $this->config->timeframe_disallowed;
+    }
+
     public function shouldUpdateWithDependencies()
     {
         return (bool) $this->config->update_with_dependencies;
