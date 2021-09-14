@@ -85,6 +85,15 @@ class Config
         return [];
     }
 
+    public function getAssignees()
+    {
+        if (!is_array($this->config->assignees)) {
+            return [];
+        }
+
+      return $this->config->assignees;
+    }
+
     public function getBlockList()
     {
         if (!is_array($this->config->blocklist)) {
