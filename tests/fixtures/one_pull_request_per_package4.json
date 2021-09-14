@@ -1,0 +1,8 @@
+{
+  "extra": {
+    "violinist": {
+      "one_pull_request_per_package": "false",
+      "bogus_option_just_wanted_to_comment_that_the_above_should_evaulate_to_true": 1
+    }
+  }
+}

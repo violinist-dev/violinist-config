@@ -114,6 +114,18 @@ class UnitTest extends TestCase
     }
 
     /**
+     * Test the one pull request per package config option.
+     *
+     * @dataProvider getOnePrPerPackage
+     */
+    public function testOnePrPerPackage($filename, $expected_result)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($expected_result, $data->shouldUseOnePullRequestPerPackage());
+        self::assertEquals($expected_result, $data->shouldUseOneMergeRequestPerPackage());
+    }
+
+    /**
      * Test the security updates config option.
      *
      * @dataProvider getSecurityUpdates
@@ -150,6 +162,32 @@ class UnitTest extends TestCase
     {
         $file_contents = json_decode(file_get_contents(__DIR__ . '/fixtures/' . $filename));
         return Config::createFromComposerData($file_contents);
+    }
+
+    public function getOnePrPerPackage()
+    {
+        return [
+            [
+                'empty.json',
+                false,
+            ],
+            [
+                'one_pull_request_per_package.json',
+                true,
+            ],
+            [
+                'one_pull_request_per_package2.json',
+                false,
+            ],
+            [
+                'one_pull_request_per_package3.json',
+                true,
+            ],
+            [
+                'one_pull_request_per_package4.json',
+                true,
+            ],
+        ];
     }
 
     public function getAssignees()
