@@ -100,6 +100,20 @@ class Config
         return (bool) $this->config->run_scripts;
     }
 
+    public function getPackagesWithBundles()
+    {
+        $with_bundles = [];
+        if (!is_object($this->config->bundled_packages)) {
+            return [];
+        }
+        foreach ($this->config->bundled_packages as $package => $bundle) {
+            if (!is_array($bundle)) {
+                continue;
+            }
+            $with_bundles[] = $package;
+        }
+        return $with_bundles;
+    }
 
     public function getBundledPackagesForPackage($package_name)
     {
