@@ -21,6 +21,17 @@ class UnitTest extends TestCase
     }
 
     /**
+     * Test that we can get has config options.
+     *
+     * @dataProvider getHasConfig
+     */
+    public function testGetOptionSet($filename, $option, $expected_result)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($data->hasConfigForKey($option), $expected_result);
+    }
+
+    /**
      * Test the different things we can set in run scripts, and what we expect from it.
      *
      * @dataProvider getRunScriptData
@@ -413,6 +424,37 @@ class UnitTest extends TestCase
             [
                 'commit_message3.json',
                 'conventional',
+            ],
+        ];
+    }
+
+    public function getHasConfig()
+    {
+        return [
+            [
+                'empty.json',
+                'one_pull_request_per_package',
+                false
+            ],
+            [
+                'empty.json',
+                'bogus_option',
+                false
+            ],
+            [
+                'check_only_direct_dependencies5.json',
+                'check_only_direct_dependencies',
+                true
+            ],
+            [
+                'bundled_packages4.json',
+                'bundled_packages',
+                true
+            ],
+            [
+                'bundled_packages4.json',
+                'blocklist',
+                false
             ],
         ];
     }
