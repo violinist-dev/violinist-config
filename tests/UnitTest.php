@@ -47,6 +47,17 @@ class UnitTest extends TestCase
     }
 
     /**
+     * Test the different things about bundled packages.
+     *
+     * @dataProvider getBundledOptionsForGetter
+     */
+    public function testGetBundledPackages($filename, $expected_result)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($expected_result, $data->getPackagesWithBundles());
+    }
+
+    /**
      * Test the blacklist config option.
      *
      * @dataProvider getBlackList
@@ -455,6 +466,42 @@ class UnitTest extends TestCase
             [
                 'run_scripts8.json',
                 true
+            ]
+        ];
+    }
+
+    public function getBundledOptionsForGetter()
+    {
+        return [
+            [
+                'empty.json',
+                [],
+            ],
+            [
+                'bundled_packages.json',
+                [],
+            ],
+            [
+                'bundled_packages2.json',
+                [],
+            ],
+            [
+                'bundled_packages3.json',
+                [],
+            ],
+            [
+                'bundled_packages4.json',
+                [
+                    'psr/log'
+                ],
+            ],
+            [
+                'bundled_packages5.json',
+                [],
+            ],
+            [
+                'bundled_packages6.json',
+                [],
             ]
         ];
     }
