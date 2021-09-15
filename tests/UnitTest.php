@@ -428,7 +428,8 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getHasConfig() {
+    public function getHasConfig()
+    {
         return [
             [
                 'empty.json',
