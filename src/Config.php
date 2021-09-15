@@ -5,6 +5,7 @@ namespace Violinist\Config;
 class Config
 {
     private $config;
+    private $configOptionsSet = [];
 
     public function __construct()
     {
@@ -48,6 +49,7 @@ class Config
         foreach ($this->getDefaultConfig() as $key => $value) {
             if (isset($config->{$key})) {
                 $this->config->{$key} = $config->{$key};
+                $this->configOptionsSet[$key] = true;
             }
         }
         // Also make sure to set the block list config from the deprecated part.
@@ -61,6 +63,11 @@ class Config
                 $this->config->{$real} = $config->{$not_real};
             }
         }
+    }
+
+    public function hasConfigForKey($key)
+    {
+        return !empty($this->configOptionsSet[$key]);
     }
 
     public function getTimeZone()
