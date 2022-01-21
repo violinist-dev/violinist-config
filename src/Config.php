@@ -15,6 +15,7 @@ class Config
     public function getDefaultConfig()
     {
         return (object) [
+            'always_update_all' => 0,
             'allow_list' => [],
             'update_dev_dependencies' => 1,
             'check_only_direct_dependencies' => 1,
@@ -68,6 +69,11 @@ class Config
     public function hasConfigForKey($key)
     {
         return !empty($this->configOptionsSet[$key]);
+    }
+
+    public function shouldAlwaysUpdateAll()
+    {
+        return (bool) $this->config->always_update_all;
     }
 
     public function getTimeZone()

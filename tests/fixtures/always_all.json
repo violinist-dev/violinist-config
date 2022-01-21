@@ -1,0 +1,7 @@
+{
+  "extra": {
+    "violinist": {
+      "always_update_all": "yes_of_course_this_should_be_an_int_but_this_evaluates_to_true"
+    }
+  }
+}
