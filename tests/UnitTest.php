@@ -192,6 +192,17 @@ class UnitTest extends TestCase
     }
 
     /**
+     * Test the always_update_all option.
+     *
+     * @dataProvider getAlwaysUpdateAll
+     */
+    public function testAlwaysUpdateAll($filename, $expected_result)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($expected_result, $data->shouldAlwaysUpdateAll());
+    }
+
+    /**
      * Test the security updates config option.
      *
      * @dataProvider getSecurityUpdates
@@ -253,6 +264,36 @@ class UnitTest extends TestCase
                 'update_with_dependencies4.json',
                 false,
             ],
+        ];
+    }
+
+    public function getAlwaysUpdateAll()
+    {
+        return [
+            [
+                'empty.json',
+                false,
+            ],
+            [
+                'always_all.json',
+                true,
+            ],
+            [
+                'always_all2.json',
+                false,
+            ],
+            [
+                'always_all3.json',
+                false,
+            ],
+            [
+                'always_all4.json',
+                true,
+            ],
+            [
+                'always_all5.json',
+                true,
+            ]
         ];
     }
 
