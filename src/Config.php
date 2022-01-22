@@ -33,6 +33,7 @@ class Config
             'number_of_concurrent_updates' => 0,
             'branch_prefix' => '',
             'commit_message_convention' => '',
+            'allow_update_indirect_with_direct' => 0,
         ];
     }
 
@@ -69,6 +70,11 @@ class Config
     public function hasConfigForKey($key)
     {
         return !empty($this->configOptionsSet[$key]);
+    }
+
+    public function shouldUpdateIndirectWithDirect()
+    {
+        return (bool) $this->config->allow_update_indirect_with_direct;
     }
 
     public function shouldAlwaysUpdateAll()

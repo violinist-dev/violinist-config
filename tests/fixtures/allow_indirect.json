@@ -1,0 +1,7 @@
+{
+  "extra": {
+    "violinist": {
+      "allow_update_indirect_with_direct": "yes_of_course_this_should_be_an_int_but_this_evaluates_to_true"
+    }
+  }
+}
