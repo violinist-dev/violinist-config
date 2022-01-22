@@ -33,6 +33,7 @@ class Config
             'number_of_concurrent_updates' => 0,
             'branch_prefix' => '',
             'commit_message_convention' => '',
+            'allow_update_direct_with_only_dependencies' => 0,
         ];
     }
 
