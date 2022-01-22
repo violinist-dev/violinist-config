@@ -319,6 +319,14 @@ class UnitTest extends TestCase
                 'allow_indirect.json',
                 true,
             ],
+            [
+                'allow_indirect2.json',
+                true,
+            ],
+            [
+                'allow_indirect3.json',
+                false,
+            ],
         ];
     }
 
