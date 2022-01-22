@@ -192,6 +192,17 @@ class UnitTest extends TestCase
     }
 
     /**
+     * Test the allow_update_direct_with_only_dependencies option.
+     *
+     * @dataProvider getAllowUpdateDirect
+     */
+    public function testAllowUpdateDirect($filename, $expected_result)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($expected_result, $data->shouldUpdateIndirectWithDirect());
+    }
+
+    /**
      * Test the always_update_all option.
      *
      * @dataProvider getAlwaysUpdateAll
@@ -296,6 +307,17 @@ class UnitTest extends TestCase
             ]
         ];
     }
+
+    public function getAllowUpdateDirect()
+    {
+        return [
+            [
+                'empty.json',
+                false,
+            ],
+        ];
+    }
+
 
     public function getUpdatesBeyondConstraint()
     {
