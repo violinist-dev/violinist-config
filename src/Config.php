@@ -35,6 +35,7 @@ class Config
             'commit_message_convention' => '',
             'allow_update_indirect_with_direct' => 0,
             'automerge' => 0,
+            'automerge_security' => 0,
         ];
     }
 
@@ -75,7 +76,21 @@ class Config
 
     public function shouldAutoMerge($is_security_update = false)
     {
+        if (!$is_security_update) {
+            // It's not a security update. Let's use the option found in the config.
+            return (bool) $this->config->automerge;
+        }
+        if ($this->shouldAutoMergeSecurity()) {
+            // Meaning we should automerge, no matter what the general automerge config says.
+            return true;
+        }
+        // Fall back to using the actual option.
         return (bool) $this->config->automerge;
+    }
+
+    public function shouldAutoMergeSecurity()
+    {
+        return (bool) $this->config->automerge_security;
     }
 
     public function shouldUpdateIndirectWithDirect()
