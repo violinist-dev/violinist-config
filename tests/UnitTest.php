@@ -214,6 +214,28 @@ class UnitTest extends TestCase
     }
 
     /**
+     * Test the automerge option.
+     *
+     * @dataProvider getAutoMerge
+     */
+    public function testAutoMerge($filename, $expected_result)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($expected_result, $data->shouldAutoMerge());
+    }
+
+    /**
+     * Test the automerge_security option.
+     *
+     * @dataProvider getAutoMergeSecurity
+     */
+    public function testAutoMergeSecurity($filename, $expected_result)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($expected_result, $data->shouldAutoMerge(true));
+    }
+
+    /**
      * Test the security updates config option.
      *
      * @dataProvider getSecurityUpdates
@@ -274,6 +296,78 @@ class UnitTest extends TestCase
             [
                 'update_with_dependencies4.json',
                 false,
+            ],
+        ];
+    }
+
+    public function getAutoMerge()
+    {
+        return [
+            [
+                'empty.json',
+                false,
+            ],
+            [
+                'automerge.json',
+                true,
+            ],
+            [
+                'automerge2.json',
+                true,
+            ],
+            [
+                'automerge3.json',
+                true,
+            ],
+            [
+                'automerge4.json',
+                false,
+            ],
+            [
+                'automerge5.json',
+                false,
+            ]
+        ];
+    }
+
+    public function getAutoMergeSecurity()
+    {
+        return [
+            [
+                'empty.json',
+                false,
+            ],
+            [
+                'automerge.json',
+                true,
+            ],
+            [
+                'automerge2.json',
+                true,
+            ],
+            [
+                'automerge3.json',
+                true,
+            ],
+            [
+                'automerge4.json',
+                false,
+            ],
+            [
+                'automerge5.json',
+                false,
+            ],
+            [
+                'automerge_security.json',
+                true,
+            ],
+            [
+                'automerge_security2.json',
+                true,
+            ],
+            [
+                'automerge_security3.json',
+                true,
             ],
         ];
     }
