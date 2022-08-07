@@ -24,7 +24,7 @@ class Config
             'assignees' => [],
             'allow_updates_beyond_constraint' => 1,
             'one_pull_request_per_package' => 0,
-            'timeframe_disallowed' => 0,
+            'timeframe_disallowed' => '',
             'timezone' => '+0000',
             'update_with_dependencies' => 1,
             'default_branch' => '',
