@@ -122,6 +122,11 @@ class Config
         if (empty($this->config->timeframe_disallowed)) {
             return '';
         }
+        $frame = $this->config->timeframe_disallowed;
+        $length = count(explode('-', $frame));
+        if ($length !== 2) {
+            throw new \InvalidArgumentException('The timeframe should consist of two 24 hour format times separated by a dash ("-")');
+        }
         return $this->config->timeframe_disallowed;
     }
 
