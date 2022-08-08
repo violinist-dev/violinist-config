@@ -129,9 +129,12 @@ class UnitTest extends TestCase
      *
      * @dataProvider getTimeframes
      */
-    public function testTimeframeDisallowed($filename, $expected_result)
+    public function testTimeframeDisallowed($filename, $expected_result, $throws = false)
     {
         $data = $this->createDataFromFixture($filename);
+        if ($throws) {
+              $this->expectException(\InvalidArgumentException::class);
+        }
         self::assertEquals($expected_result, $data->getTimeFrameDisallowed());
     }
 
@@ -545,6 +548,7 @@ class UnitTest extends TestCase
             [
                 'timeframe_disallowed4.json',
                 'does not really work, but value allowed',
+                true,
             ],
         ];
     }
