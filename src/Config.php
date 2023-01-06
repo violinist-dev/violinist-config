@@ -36,6 +36,8 @@ class Config
             'allow_update_indirect_with_direct' => 0,
             'automerge' => 0,
             'automerge_security' => 0,
+            'tags' => [],
+            'tags_security' => [],
         ];
     }
 
@@ -67,6 +69,22 @@ class Config
                 $this->config->{$real} = $config->{$not_real};
             }
         }
+    }
+
+    public function getTags() : array
+    {
+        if (!is_array($this->config->tags)) {
+            return [];
+        }
+        return $this->config->tags;
+    }
+
+    public function getTagsSecurity() : array
+    {
+        if (!is_array($this->config->tags_security)) {
+            return [];
+        }
+        return $this->config->tags_security;
     }
 
     public function hasConfigForKey($key)

@@ -32,6 +32,32 @@ class UnitTest extends TestCase
     }
 
     /**
+     * Test that getTags returns the expected things.
+     *
+     * @dataProvider getTagsConfig
+     */
+    public function testTags($filename, $expected_result)
+    {
+        $this->runTestExpectedResultFromFixture($filename, $expected_result, 'getTags');
+    }
+
+    /**
+     * Test that getTagsSecurity returns the expected things.
+     *
+     * @dataProvider getTagsSecurityConfig
+     */
+    public function testTagsSecurity($filename, $expected_result)
+    {
+        $this->runTestExpectedResultFromFixture($filename, $expected_result, 'getTagsSecurity');
+    }
+
+    protected function runTestExpectedResultFromFixture($filename, $expected_result, $method)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($expected_result, $data->{$method}());
+    }
+
+    /**
      * Test the different things we can set in run scripts, and what we expect from it.
      *
      * @dataProvider getRunScriptData
@@ -597,6 +623,74 @@ class UnitTest extends TestCase
             [
                 'commit_message3.json',
                 'conventional',
+            ],
+        ];
+    }
+
+    public function getTagsConfig()
+    {
+        return [
+            [
+                'empty.json',
+                [],
+            ],
+            [
+                'tags.json',
+                [],
+            ],
+            [
+                'tags2.json',
+                [],
+            ],
+            [
+                'tags3.json',
+                [],
+            ],
+            [
+                'tags4.json',
+                [],
+            ],
+            [
+                'tags5.json',
+                ["tag123"],
+            ],
+            [
+                'tags6.json',
+                ["tag123", "tag456"],
+            ],
+        ];
+    }
+
+    public function getTagsSecurityConfig()
+    {
+        return [
+            [
+                'empty.json',
+                [],
+            ],
+            [
+                'tags_security.json',
+                [],
+            ],
+            [
+                'tags_security2.json',
+                [],
+            ],
+            [
+                'tags_security3.json',
+                [],
+            ],
+            [
+                'tags_security4.json',
+                [],
+            ],
+            [
+                'tags_security5.json',
+                ["tag123"],
+            ],
+            [
+                'tags_security6.json',
+                ["tag123", "tag456"],
             ],
         ];
     }
