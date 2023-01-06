@@ -1,0 +1,9 @@
+{
+  "extra": {
+    "violinist": {
+      "tags_security": {
+        "tag1": true
+      }
+    }
+  }
+}
