@@ -79,7 +79,8 @@ class Config
         return $this->config->tags;
     }
 
-    public function getTagsSecurity() : array {
+    public function getTagsSecurity() : array
+    {
         if (!is_array($this->config->tags_security)) {
             return [];
         }
