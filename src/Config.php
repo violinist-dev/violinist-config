@@ -81,7 +81,7 @@ class Config
 
     public function getLabelsSecurity() : array
     {
-        if (!is_array($this->config->labels_security{
+        if (!is_array($this->config->labels_security)) {
             return [];
         }
         return $this->config->labels_security;
