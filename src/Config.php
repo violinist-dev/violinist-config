@@ -71,20 +71,20 @@ class Config
         }
     }
 
-    public function getTags() : array
+    public function getLabels() : array
     {
-        if (!is_array($this->config->tags)) {
+        if (!is_array($this->config->labels)) {
             return [];
         }
-        return $this->config->tags;
+        return $this->config->labels;
     }
 
-    public function getTagsSecurity() : array
+    public function getLabelsSecurity() : array
     {
-        if (!is_array($this->config->tags_security)) {
+        if (!is_array($this->config->labels_security{
             return [];
         }
-        return $this->config->tags_security;
+        return $this->config->labels_security;
     }
 
     public function hasConfigForKey($key)
