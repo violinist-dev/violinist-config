@@ -1,8 +1,8 @@
 {
   "extra": {
     "violinist": {
-      "tags": {
-        "tag1": true
+      "labels": {
+        "label1": true
       }
     }
   }
