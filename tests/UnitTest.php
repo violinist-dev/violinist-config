@@ -46,7 +46,7 @@ class UnitTest extends TestCase
      *
      * @dataProvider getLabelsSecurityConfig
      */
-    public function testTagsSecurity($filename, $expected_result)
+    public function testLabelsSecurity($filename, $expected_result)
     {
         $this->runTestExpectedResultFromFixture($filename, $expected_result, 'getLabelsSecurity');
     }
