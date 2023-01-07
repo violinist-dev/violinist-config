@@ -36,8 +36,8 @@ class Config
             'allow_update_indirect_with_direct' => 0,
             'automerge' => 0,
             'automerge_security' => 0,
-            'tags' => [],
-            'tags_security' => [],
+            'labels' => [],
+            'labels_security' => [],
         ];
     }
 
