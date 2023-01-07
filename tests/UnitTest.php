@@ -34,11 +34,11 @@ class UnitTest extends TestCase
     /**
      * Test that getTags returns the expected things.
      *
-     * @dataProvider getTagsConfig
+     * @dataProvider getLabelsConfig
      */
-    public function testTags($filename, $expected_result)
+    public function testLabels($filename, $expected_result)
     {
-        $this->runTestExpectedResultFromFixture($filename, $expected_result, 'getTags');
+        $this->runTestExpectedResultFromFixture($filename, $expected_result, 'getLabels');
     }
 
     /**
@@ -635,27 +635,27 @@ class UnitTest extends TestCase
                 [],
             ],
             [
-                'tags.json',
+                'labels.json',
                 [],
             ],
             [
-                'tags2.json',
+                'labels2.json',
                 [],
             ],
             [
-                'tags3.json',
+                'labels3.json',
                 [],
             ],
             [
-                'tags4.json',
+                'labels4.json',
                 [],
             ],
             [
-                'tags5.json',
+                'labels5.json',
                 ["tag123"],
             ],
             [
-                'tags6.json',
+                'labels6.json',
                 ["tag123", "tag456"],
             ],
         ];
