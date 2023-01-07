@@ -32,23 +32,23 @@ class UnitTest extends TestCase
     }
 
     /**
-     * Test that getTags returns the expected things.
+     * Test that getLabels returns the expected things.
      *
-     * @dataProvider getTagsConfig
+     * @dataProvider getLabelsConfig
      */
-    public function testTags($filename, $expected_result)
+    public function testLabels($filename, $expected_result)
     {
-        $this->runTestExpectedResultFromFixture($filename, $expected_result, 'getTags');
+        $this->runTestExpectedResultFromFixture($filename, $expected_result, 'getLabels');
     }
 
     /**
-     * Test that getTagsSecurity returns the expected things.
+     * Test that getLabelsSecurity returns the expected things.
      *
-     * @dataProvider getTagsSecurityConfig
+     * @dataProvider getLabelsSecurityConfig
      */
-    public function testTagsSecurity($filename, $expected_result)
+    public function testLabelsSecurity($filename, $expected_result)
     {
-        $this->runTestExpectedResultFromFixture($filename, $expected_result, 'getTagsSecurity');
+        $this->runTestExpectedResultFromFixture($filename, $expected_result, 'getLabelsSecurity');
     }
 
     protected function runTestExpectedResultFromFixture($filename, $expected_result, $method)
@@ -627,7 +627,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getTagsConfig()
+    public function getLabelsConfig()
     {
         return [
             [
@@ -635,33 +635,33 @@ class UnitTest extends TestCase
                 [],
             ],
             [
-                'tags.json',
+                'labels.json',
                 [],
             ],
             [
-                'tags2.json',
+                'labels2.json',
                 [],
             ],
             [
-                'tags3.json',
+                'labels3.json',
                 [],
             ],
             [
-                'tags4.json',
+                'labels4.json',
                 [],
             ],
             [
-                'tags5.json',
+                'labels5.json',
                 ["tag123"],
             ],
             [
-                'tags6.json',
+                'labels6.json',
                 ["tag123", "tag456"],
             ],
         ];
     }
 
-    public function getTagsSecurityConfig()
+    public function getLabelsSecurityConfig()
     {
         return [
             [
@@ -669,27 +669,27 @@ class UnitTest extends TestCase
                 [],
             ],
             [
-                'tags_security.json',
+                'labels_security.json',
                 [],
             ],
             [
-                'tags_security2.json',
+                'labels_security2.json',
                 [],
             ],
             [
-                'tags_security3.json',
+                'labels_security3.json',
                 [],
             ],
             [
-                'tags_security4.json',
+                'labels_security4.json',
                 [],
             ],
             [
-                'tags_security5.json',
+                'labels_security5.json',
                 ["tag123"],
             ],
             [
-                'tags_security6.json',
+                'labels_security6.json',
                 ["tag123", "tag456"],
             ],
         ];

@@ -1,7 +1,7 @@
 {
   "extra": {
     "violinist": {
-      "tags": ["tag123", "tag456"]
+      "labels_security": ["tag123"]
     }
   }
 }
