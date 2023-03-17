@@ -58,6 +58,17 @@ class UnitTest extends TestCase
     }
 
     /**
+     * Test the different things we can set in always allow direct.
+     *
+     * @dataProvider getAlwaysAllowDirect
+     */
+    public function testAlwaysDirect($filename, $expected_result)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($expected_result, $data->shouldAlwaysAllowDirect());
+    }
+
+    /**
      * Test the different things we can set in run scripts, and what we expect from it.
      *
      * @dataProvider getRunScriptData
@@ -738,6 +749,36 @@ class UnitTest extends TestCase
             ['empty4.json'],
             ['empty5.json'],
             ['empty6.json'],
+        ];
+    }
+
+    public function getAlwaysAllowDirect()
+    {
+        return [
+            [
+                'empty.json',
+                false,
+            ],
+            [
+                'always_allow_direct_dependencies.json',
+                true
+            ],
+            [
+                'always_allow_direct_dependencies2.json',
+                true
+            ],
+            [
+                'always_allow_direct_dependencies3.json',
+                true
+            ],
+            [
+                'always_allow_direct_dependencies4.json',
+                false
+            ],
+            [
+                'always_allow_direct_dependencies5.json',
+                false
+            ],
         ];
     }
 
