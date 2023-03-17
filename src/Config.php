@@ -16,7 +16,7 @@ class Config
     {
         return (object) [
             'always_update_all' => 0,
-            'always_allow_direct_depdendencies' => 0,
+            'always_allow_direct_dependencies' => 0,
             'allow_list' => [],
             'update_dev_dependencies' => 1,
             'check_only_direct_dependencies' => 1,
@@ -90,7 +90,7 @@ class Config
 
     public function shouldAlwaysAllowDirect() : bool
     {
-        return (bool) $this->config->always_allow_direct_depdendencies;
+        return (bool) $this->config->always_allow_direct_dependencies;
     }
 
     public function hasConfigForKey($key)
