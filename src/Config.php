@@ -17,6 +17,7 @@ class Config
         return (object) [
             'always_update_all' => 0,
             'always_allow_direct_dependencies' => 0,
+            'ignore_platform_requirements' => 0,
             'allow_list' => [],
             'update_dev_dependencies' => 1,
             'check_only_direct_dependencies' => 1,
@@ -285,6 +286,11 @@ class Config
             return (string) $this->config->branch_prefix;
         }
         return '';
+    }
+
+    public function shouldIgnorePlatformRequirements() : bool
+    {
+        return (bool) $this->config->ignore_platform_requirements;
     }
 
     public function getCommitMessageConvention()

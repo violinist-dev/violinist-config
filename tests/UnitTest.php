@@ -69,6 +69,17 @@ class UnitTest extends TestCase
     }
 
     /**
+     * Test the different things we can set in ignore platform.
+     *
+     * @dataProvider getIgnorePlatform
+     */
+    public function testIgnorePlatform($filename, $expected_result)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($expected_result, $data->shouldIgnorePlatformRequirements());
+    }
+
+    /**
      * Test the different things we can set in run scripts, and what we expect from it.
      *
      * @dataProvider getRunScriptData
@@ -749,6 +760,36 @@ class UnitTest extends TestCase
             ['empty4.json'],
             ['empty5.json'],
             ['empty6.json'],
+        ];
+    }
+
+    public function getIgnorePlatform()
+    {
+        return [
+            [
+                'empty.json',
+                false,
+            ],
+            [
+                'ignore_platform.json',
+                true
+            ],
+            [
+                'ignore_platform2.json',
+                true
+            ],
+            [
+                'ignore_platform3.json',
+                true
+            ],
+            [
+                'ignore_platform4.json',
+                false
+            ],
+            [
+                'ignore_platform5.json',
+                false
+            ],
         ];
     }
 
