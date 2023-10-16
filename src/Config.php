@@ -61,6 +61,7 @@ class Config
             }
         }
         // Also make sure to set the block list config from the deprecated part.
+        // Plus alternative spelling from allow list.
         $renamed_and_aliased = [
             'blacklist' => 'blocklist',
             'block_list' => 'blocklist',
