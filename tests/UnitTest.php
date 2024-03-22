@@ -287,6 +287,28 @@ class UnitTest extends TestCase
     }
 
     /**
+     * Test the automerge_method option.
+     *
+     * @dataProvider getAutoMergeMethod
+     */
+    public function testAutoMergeMethod($filename, $expected_result)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($expected_result, $data->getAutomergeMethod());
+    }
+
+    /**
+     * Test the automerge_method option.
+     *
+     * @dataProvider getAutoMergeMethodSecurity
+     */
+    public function testAutoMergeMethodSecurity($filename, $expected_result)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($expected_result, $data->getAutomergeMethod(true));
+    }
+
+    /**
      * Test the security updates config option.
      *
      * @dataProvider getSecurityUpdates
@@ -420,6 +442,122 @@ class UnitTest extends TestCase
                 'automerge_security3.json',
                 true,
             ],
+        ];
+    }
+
+    public function getAutoMergeMethod()
+    {
+        return [
+            [
+                'empty.json',
+                'merge',
+            ],
+            [
+                'automerge_method.json',
+                'merge',
+            ],
+            [
+                'automerge_method2.json',
+                'merge',
+            ],
+            [
+                'automerge_method3.json',
+                'merge',
+            ],
+            [
+                'automerge_method4.json',
+                'squash',
+            ],
+            [
+                'automerge_method5.json',
+                'rebase',
+            ],
+            [
+                'automerge_method6.json',
+                'merge',
+            ],
+            [
+                'automerge_method_security.json',
+                'merge',
+            ],
+            [
+                'automerge_method_security2.json',
+                'merge',
+            ],
+            [
+                'automerge_method_security3.json',
+                'merge',
+            ],
+            [
+                'automerge_method_security4.json',
+                'merge',
+            ],
+            [
+                'automerge_method_security5.json',
+                'merge',
+            ],
+            [
+                'automerge_method_security6.json',
+                'merge',
+            ]
+        ];
+    }
+
+    public function getAutoMergeMethodSecurity()
+    {
+        return [
+            [
+                'empty.json',
+                'merge',
+            ],
+            [
+                'automerge_method.json',
+                'merge',
+            ],
+            [
+                'automerge_method2.json',
+                'merge',
+            ],
+            [
+                'automerge_method3.json',
+                'merge',
+            ],
+            [
+                'automerge_method4.json',
+                'squash',
+            ],
+            [
+                'automerge_method5.json',
+                'rebase',
+            ],
+            [
+                'automerge_method6.json',
+                'merge',
+            ],
+            [
+                'automerge_method_security.json',
+                'merge',
+            ],
+            [
+                'automerge_method_security2.json',
+                'merge',
+            ],
+            [
+                'automerge_method_security3.json',
+                'merge',
+            ],
+            [
+                'automerge_method_security4.json',
+                'squash',
+            ],
+            [
+                'automerge_method_security5.json',
+                'rebase',
+            ],
+            [
+                'automerge_method_security6.json',
+                'merge',
+            ]
         ];
     }
 

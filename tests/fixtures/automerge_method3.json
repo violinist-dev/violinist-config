@@ -1,0 +1,7 @@
+{
+  "extra": {
+    "violinist": {
+      "automerge_method": ["not allow to be an array for sure"]
+    }
+  }
+}
