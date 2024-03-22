@@ -119,12 +119,12 @@ class Config
     public function getAutomergeMethod($is_security_update = false) : string
     {
         if (!$is_security_update) {
-            return $this->getAutoMergeMethodWithFallback($is_security_update);
+            return $this->getAutoMergeMethodWithFallback('automerge_method');
         }
         // Otherwise, let's see if it's even set in config. Otherwise this
         // should be set to the value (or fallback value) of the general
         // automerge method.
-        if (!$this->hasConfigForKey('automerge_method_security')) {
+        if ($this->hasConfigForKey('automerge_method_security')) {
             return $this->getAutoMergeMethodWithFallback('automerge_method_security');
         }
         return $this->getAutoMergeMethodWithFallback('automerge_method');
