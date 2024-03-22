@@ -38,6 +38,8 @@ class Config
             'allow_update_indirect_with_direct' => 0,
             'automerge' => 0,
             'automerge_security' => 0,
+            'automerge_method' => 'merge',
+            'automerge_method_security' => 'merge',
             'labels' => [],
             'labels_security' => [],
         ];
@@ -112,6 +114,33 @@ class Config
         }
         // Fall back to using the actual option.
         return (bool) $this->config->automerge;
+    }
+
+    public function getAutomergeMethod($is_security_update = false) : string
+    {
+        if (!$is_security_update) {
+            return $this->getAutoMergeMethodWithFallback($is_security_update);
+        }
+        // Otherwise, let's see if it's even set in config. Otherwise this
+        // should be set to the value (or fallback value) of the general
+        // automerge method.
+        if (!$this->hasConfigForKey('automerge_method_security')) {
+            return $this->getAutoMergeMethodWithFallback('automerge_method_security');
+        }
+        return $this->getAutoMergeMethodWithFallback('automerge_method');
+    }
+
+    protected function getAutoMergeMethodWithFallback($automerge_property) : string
+    {
+        if (!in_array($this->config->{$automerge_property}, [
+            'merge',
+            'rebase',
+            'squash',
+        ])
+        ) {
+            return 'merge';
+        }
+        return $this->config->{$automerge_property};
     }
 
     public function shouldAutoMergeSecurity()
