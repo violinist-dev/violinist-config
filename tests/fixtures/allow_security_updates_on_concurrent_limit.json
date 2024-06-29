@@ -1,0 +1,8 @@
+{
+  "extra": {
+    "violinist": {
+      "number_of_concurrent_updates": 1,
+      "allow_security_updates_on_concurrent_limit": 1
+    }
+  }
+}
