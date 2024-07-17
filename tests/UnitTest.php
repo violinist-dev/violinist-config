@@ -320,6 +320,17 @@ class UnitTest extends TestCase
     }
 
     /**
+     * Test the allow_security_updates_on_concurrent_limit config option.
+     *
+     * @dataProvider getAllowSecurityUpdatesOnConcurrentLimitDataProvider
+     */
+    public function testAllowSecurityUpdatesOnConcurrentLimit($filename, $expected_result)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($expected_result, $data->shouldAllowSecurityUpdatesOnConcurrentLimit());
+    }
+
+    /**
      * Test the only direct dependencies config option.
      *
      * @dataProvider getOnlyDirectDependencies
@@ -1234,6 +1245,18 @@ class UnitTest extends TestCase
                 'empty.json',
                 false,
             ],
+        ];
+    }
+
+    /**
+     * Data provider for testAllowSecurityUpdatesOnConcurrentLimit.
+     */
+    public function getAllowSecurityUpdatesOnConcurrentLimitDataProvider()
+    {
+        return [
+            ['empty.json', false],
+            ['allow_security_updates_on_concurrent_limit.json', true],
+            ['allow_security_updates_on_concurrent_limit1.json', false],
         ];
     }
 
