@@ -33,6 +33,7 @@ class Config
             'run_scripts' => 1,
             'security_updates_only' => 0,
             'number_of_concurrent_updates' => 0,
+            'allow_security_updates_on_concurrent_limit' => 0,
             'branch_prefix' => '',
             'commit_message_convention' => '',
             'allow_update_indirect_with_direct' => 0,
@@ -287,6 +288,11 @@ class Config
     public function getNumberOfAllowedPrs()
     {
         return (int) $this->config->number_of_concurrent_updates;
+    }
+
+    public function shouldAllowSecurityUpdatesOnConcurrentLimit()
+    {
+        return (bool) $this->config->allow_security_updates_on_concurrent_limit;
     }
 
     public function shouldOnlyUpdateSecurityUpdates()
