@@ -78,6 +78,22 @@ class Config
         }
     }
 
+    public function getComposerOutdatedFlag() : string 
+    {
+        if (empty($this->config->composer_outdated_flag)) {
+            return 'minor';
+        }
+        $allowed_values = [
+            'major',
+            'minor',
+            'patch',
+        ];
+        if (!in_array($this->config->composer_outdated_flag, $allowed_values)) {
+            return 'minor';
+        }
+        return $this->config->composer_outdated_flag;
+    }
+
     public function getLabels() : array
     {
         if (!is_array($this->config->labels)) {
