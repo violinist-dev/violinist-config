@@ -377,6 +377,7 @@ class UnitTest extends TestCase
                 'minor',
             ],
         ];
+    }
 
     public function getUpdateWithDeps()
     {
