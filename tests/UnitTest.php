@@ -384,6 +384,10 @@ class UnitTest extends TestCase
                 'outdated_flag1.json',
                 'minor',
             ],
+            [
+                'outdated_flag2.json',
+                'patch',
+            ],
         ];
     }
 
