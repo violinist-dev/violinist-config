@@ -21,6 +21,7 @@ class Config
             'allow_list' => [],
             'update_dev_dependencies' => 1,
             'check_only_direct_dependencies' => 1,
+            'composer_outdated_flag' => 'minor',
             'bundled_packages' => (object) [],
             'blocklist' => [],
             'assignees' => [],
@@ -75,6 +76,22 @@ class Config
                 $this->config->{$real} = $config->{$not_real};
             }
         }
+    }
+
+    public function getComposerOutdatedFlag() : string
+    {
+        if (empty($this->config->composer_outdated_flag)) {
+            return 'minor';
+        }
+        $allowed_values = [
+            'major',
+            'minor',
+            'patch',
+        ];
+        if (!in_array($this->config->composer_outdated_flag, $allowed_values)) {
+            return 'minor';
+        }
+        return $this->config->composer_outdated_flag;
     }
 
     public function getLabels() : array
