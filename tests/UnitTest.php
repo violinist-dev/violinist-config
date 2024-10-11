@@ -32,6 +32,17 @@ class UnitTest extends TestCase
     }
 
     /**
+     * Test the composer_outdated_flag option.
+     *
+     * @dataProvider getOutdatedFlag
+     */
+    public function testOutdatedFlag($filename, $expected_result)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($expected_result, $data->getComposerOutdatedFlag());
+    }
+
+    /**
      * Test that getLabels returns the expected things.
      *
      * @dataProvider getLabelsConfig
@@ -357,6 +368,15 @@ class UnitTest extends TestCase
         $file_contents = json_decode(file_get_contents(__DIR__ . '/fixtures/' . $filename));
         return Config::createFromComposerData($file_contents);
     }
+
+    public static function getOutdatedFlag() : array
+    {
+        return [
+            [
+                'empty.json',
+                'minor',
+            ],
+        ];
 
     public function getUpdateWithDeps()
     {
