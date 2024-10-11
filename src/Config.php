@@ -21,6 +21,7 @@ class Config
             'allow_list' => [],
             'update_dev_dependencies' => 1,
             'check_only_direct_dependencies' => 1,
+            'composer_outdated_flag' => 'minor',
             'bundled_packages' => (object) [],
             'blocklist' => [],
             'assignees' => [],
