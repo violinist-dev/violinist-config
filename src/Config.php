@@ -78,7 +78,7 @@ class Config
         }
     }
 
-    public function getComposerOutdatedFlag() : string 
+    public function getComposerOutdatedFlag() : string
     {
         if (empty($this->config->composer_outdated_flag)) {
             return 'minor';
