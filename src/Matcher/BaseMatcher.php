@@ -20,12 +20,6 @@ abstract class BaseMatcher implements MatcherInterface
 
     public function getRelevantRules() : array
     {
-        if (empty($this->config)) {
-            return [];
-        }
-        if (empty($this->configName)) {
-            return [];
-        }
         if (empty($this->config->matchRules)) {
             return [];
         }

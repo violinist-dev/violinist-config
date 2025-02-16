@@ -13,7 +13,7 @@ class MatcherFactory
         ];
     }
 
-    public function hasMatches($rule, string $package_name)
+    public function hasMatches(\stdClass $rule, string $package_name)
     {
         $matchers = $this->getMatchers($rule);
         foreach ($matchers as $matcher) {
