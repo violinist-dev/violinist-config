@@ -6,12 +6,11 @@ on:
 jobs:
   test:
     name: Run tests
-    runs-on: 'ubuntu-20.04'
+    runs-on: 'ubuntu-latest'
     strategy:
       fail-fast: false
       matrix:
         php-version:
-          - "7.2"
           - "7.3"
           - "7.4"
           - "8.0"
