@@ -83,29 +83,19 @@ class Config
         // Remove the filename part of the path.
         $directory = dirname($path);
         $extends_path = $directory . '/' . $extends;
-        // If that file exists. Let's parse it, and merge the config.
-        if (file_exists($extends_path)) {
-            $extends_data = json_decode(file_get_contents($extends_path));
-            $extends_instance = self::createFromViolinistConfigInPath($extends_data, $extends_path);
-            // Now merge the two.
-            $instance->mergeConfig($instance->config, $extends_instance->config);
-        }
-        // If the file does not exist, we can try to use it as package name.
-        $extends_path = sprintf('%s/vendor/%s/%s', $directory, $extends, self::VIOLINIST_CONFIG_FILE);
-        if (file_exists($extends_path)) {
-            $extends_data = json_decode(file_get_contents($extends_path));
-            $extends_instance = self::createFromViolinistConfigInPath($extends_data, $extends_path);
-            // Now merge the two.
-            $instance->mergeConfig($instance->config, $extends_instance->config);
-        }
-        // Lastly, they can be allowed to pass a package name, followed by a
-        // file in there. So basically "vendor/package/file.json".
-        $extends_path = sprintf('%s/vendor/%s', $directory, $extends);
-        if (file_exists($extends_path)) {
-            $extends_data = json_decode(file_get_contents($extends_path));
-            $extends_instance = self::createFromViolinistConfigInPath($extends_data, $extends_path);
-            // Now merge the two.
-            $instance->mergeConfig($instance->config, $extends_instance->config);
+        $potential_places = [
+            $extends_path,
+            sprintf('%s/vendor/%s/%s', $directory, $extends, self::VIOLINIST_CONFIG_FILE),
+            sprintf('%s/vendor/%s', $directory, $extends),
+        ];
+        foreach ($potential_places as $potential_place) {
+            if (file_exists($potential_place)) {
+                $extends_data = json_decode(file_get_contents($potential_place));
+                $extends_instance = self::createFromViolinistConfigInPath($extends_data, $potential_place);
+                // Now merge the two.
+                $instance->mergeConfig($instance->config, $extends_instance->config);
+                break;
+            }
         }
         return $instance;
     }
