@@ -395,7 +395,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getUpdateWithDeps()
+    public static function getUpdateWithDeps()
     {
         return [
             [
@@ -421,7 +421,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getAutoMerge()
+    public static function getAutoMerge()
     {
         return [
             [
@@ -451,7 +451,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getAutoMergeSecurity()
+    public static function getAutoMergeSecurity()
     {
         return [
             [
@@ -493,7 +493,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getAutoMergeMethod()
+    public static function getAutoMergeMethod()
     {
         return [
             [
@@ -551,7 +551,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getAutoMergeMethodSecurity()
+    public static function getAutoMergeMethodSecurity()
     {
         return [
             [
@@ -609,7 +609,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getAlwaysUpdateAll()
+    public static function getAlwaysUpdateAll()
     {
         return [
             [
@@ -639,7 +639,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getAllowUpdateDirect()
+    public static function getAllowUpdateDirect()
     {
         return [
             [
@@ -662,7 +662,7 @@ class UnitTest extends TestCase
     }
 
 
-    public function getUpdatesBeyondConstraint()
+    public static function getUpdatesBeyondConstraint()
     {
         return [
             [
@@ -688,7 +688,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getOnePrPerPackage()
+    public static function getOnePrPerPackage()
     {
         return [
             [
@@ -714,7 +714,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getAssignees()
+    public static function getAssignees()
     {
         return [
             [
@@ -738,7 +738,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getBranchPrefix()
+    public static function getBranchPrefix()
     {
         return [
             [
@@ -760,7 +760,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getTimeframes()
+    public static function getTimeframes()
     {
         return [
             [
@@ -787,7 +787,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getTimezone()
+    public static function getTimezone()
     {
         return [
             [
@@ -813,7 +813,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getCommitMessage()
+    public static function getCommitMessage()
     {
         return [
             [
@@ -835,7 +835,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getLabelsConfig()
+    public static function getLabelsConfig()
     {
         return [
             [
@@ -869,7 +869,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getLabelsSecurityConfig()
+    public static function getLabelsSecurityConfig()
     {
         return [
             [
@@ -903,7 +903,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getHasConfig()
+    public static function getHasConfig()
     {
         return [
             [
@@ -937,7 +937,7 @@ class UnitTest extends TestCase
     /**
      * A data provider.
      */
-    public function emptyConfigs()
+    public static function emptyConfigs()
     {
         return [
             ['empty.json'],
@@ -949,7 +949,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getIgnorePlatform()
+    public static function getIgnorePlatform()
     {
         return [
             [
@@ -979,7 +979,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getAlwaysAllowDirect()
+    public static function getAlwaysAllowDirect()
     {
         return [
             [
@@ -1009,7 +1009,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getRunScriptData()
+    public static function getRunScriptData()
     {
         return [
             [
@@ -1047,7 +1047,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getBundledOptionsForGetter()
+    public static function getBundledOptionsForGetter()
     {
         return [
             [
@@ -1083,7 +1083,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getBundledOptions()
+    public static function getBundledOptions()
     {
         return [
             [
@@ -1117,7 +1117,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getAllowList()
+    public static function getAllowList()
     {
         return [
             [
@@ -1143,7 +1143,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getBlackList()
+    public static function getBlackList()
     {
         return [
             [
@@ -1191,7 +1191,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getDefaultBranch()
+    public static function getDefaultBranch()
     {
         return [
             [
@@ -1209,7 +1209,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getUpdateDevDependencies()
+    public static function getUpdateDevDependencies()
     {
         return [
             [
@@ -1247,7 +1247,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getSecurityUpdates()
+    public static function getSecurityUpdates()
     {
         return [
             [
@@ -1288,7 +1288,7 @@ class UnitTest extends TestCase
     /**
      * Data provider for testAllowSecurityUpdatesOnConcurrentLimit.
      */
-    public function getAllowSecurityUpdatesOnConcurrentLimitDataProvider()
+    public static function getAllowSecurityUpdatesOnConcurrentLimitDataProvider()
     {
         return [
             ['empty.json', false],
@@ -1297,7 +1297,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getOnlyDirectDependencies()
+    public static function getOnlyDirectDependencies()
     {
         return [
             [
