@@ -6,6 +6,7 @@ class Config
 {
     private $config;
     private $configOptionsSet = [];
+    private $matcherFactory;
 
     public function __construct()
     {
@@ -44,6 +45,7 @@ class Config
             'automerge_method_security' => 'merge',
             'labels' => [],
             'labels_security' => [],
+            'rules' => [],
         ];
     }
 
@@ -54,6 +56,19 @@ class Config
             $instance->setConfig($data->extra->violinist);
         }
         return $instance;
+    }
+
+    public static function createFromViolinistConfig($data)
+    {
+        $instance = new self();
+        $instance->setConfig($data);
+        return $instance;
+    }
+
+    public static function createFromViolinistConfigJsonString(string $data)
+    {
+        $json_data = json_decode($data, false, 512, JSON_THROW_ON_ERROR);
+        return self::createFromViolinistConfig($json_data);
     }
 
     public function setConfig($config)
@@ -70,11 +85,14 @@ class Config
             'blacklist' => 'blocklist',
             'block_list' => 'blocklist',
             'allowlist' => 'allow_list',
-        ] ;
+        ];
         foreach ($renamed_and_aliased as $not_real => $real) {
             if (isset($config->{$not_real})) {
                 $this->config->{$real} = $config->{$not_real};
             }
+        }
+        if (!empty($config->rules)) {
+            $this->config->rules = $config->rules;
         }
     }
 
@@ -353,5 +371,41 @@ class Config
         }
 
         return $this->config->commit_message_convention;
+    }
+
+    public function getConfigForPackage(string $package_name) : self
+    {
+        if (empty($this->config->rules)) {
+            return $this;
+        }
+        $new_config = clone $this->config;
+        foreach ($this->config->rules as $rule) {
+            if (empty($rule->config)) {
+                continue;
+            }
+            $matches = $this->getMatcherFactory()->hasMatches($rule, $package_name);
+            if (!$matches) {
+                continue;
+            }
+            // Then merge the config for this rule.
+            foreach ($rule->config as $key => $value) {
+                $new_config->{$key} = $value;
+            }
+        }
+        return self::createFromViolinistConfig($new_config);
+    }
+
+    public function getMatcherFactory() : MatcherFactory
+    {
+        if (!$this->matcherFactory) {
+            $this->matcherFactory = new MatcherFactory();
+        }
+        return $this->matcherFactory;
+    }
+
+    public function setMatcherFactory(MatcherFactory $factory) : self
+    {
+        $this->matcherFactory = $factory;
+        return $this;
     }
 }
