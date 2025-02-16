@@ -1,30 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="vendor/autoload.php"
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
          backupGlobals="false"
-         backupStaticAttributes="false"
          colors="true"
-         verbose="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
          processIsolation="false"
+         displayDetailsOnPhpunitDeprecations="true"
          stopOnFailure="false">
     <testsuites>
         <testsuite name="Violinist test suite">
             <directory>tests</directory>
         </testsuite>
     </testsuites>
-
-    <logging>
-        <log type="coverage-html" target="data/tmp/coverage" title="kco_php"
-             charset="UTF-8" yui="true" highlight="true"
-             lowUpperBound="35" highLowerBound="70" />
-        <log type="coverage-clover" target="data/tmp/coverage.xml" />
-    </logging>
-
-    <filter>
-        <whitelist>
+    <coverage includeUncoveredFiles="true"
+              disableCodeCoverageIgnore="true">
+        <report>
+            <clover outputFile="data/tmp/coverage.xml"/>
+            <html outputDirectory="data/tmp/coverage" lowUpperBound="35" highLowerBound="70"/>
+        </report>
+    </coverage>
+    <source restrictDeprecations="true" restrictNotices="true" restrictWarnings="true">
+        <include>
             <directory>src</directory>
-        </whitelist>
-    </filter>
+        </include>
+    </source>
+
 </phpunit>

@@ -6,6 +6,9 @@ class Config
 {
     private $config;
     private $configOptionsSet = [];
+    private $matcherFactory;
+
+    const VIOLINIST_CONFIG_FILE = 'violinist-config.json';
 
     public function __construct()
     {
@@ -47,6 +50,55 @@ class Config
         ];
     }
 
+    public static function createFromComposerPath(string $path)
+    {
+        if (!file_exists($path)) {
+            throw new \InvalidArgumentException('The path provided does not contain a composer.json file');
+        }
+        $composer_data = json_decode(file_get_contents($path));
+        return self::createFromComposerDataInPath($composer_data, $path);
+    }
+
+    public static function createFromComposerDataInPath(\stdClass $data, string $path)
+    {
+        // First we need the actual thing from the composer data.
+        $instance = self::createFromComposerData($data);
+        $extra_data = (object) [];
+        if (!empty($data->extra->violinist)) {
+            $extra_data = $data->extra->violinist;
+        }
+        $instance = self::handleExtendFromInstanceAndData($instance, $extra_data, $path);
+        return $instance;
+    }
+
+    public static function handleExtendFromInstanceAndData(Config $instance, $data, $path) : Config
+    {
+        // Now, is there a thing on the path in extends? Is there even
+        // "extends"?
+        if (empty($data->extends)) {
+            return $instance;
+        }
+        $extends = $data->extends;
+        // Remove the filename part of the path.
+        $directory = dirname($path);
+        $extends_path = $directory . '/' . $extends;
+        $potential_places = [
+            $extends_path,
+            sprintf('%s/vendor/%s/%s', $directory, $extends, self::VIOLINIST_CONFIG_FILE),
+            sprintf('%s/vendor/%s', $directory, $extends),
+        ];
+        foreach ($potential_places as $potential_place) {
+            if (file_exists($potential_place)) {
+                $extends_data = json_decode(file_get_contents($potential_place));
+                $extends_instance = self::createFromViolinistConfigInPath($extends_data, $potential_place);
+                // Now merge the two.
+                $instance->mergeConfig($instance->config, $extends_instance->config);
+                break;
+            }
+        }
+        return $instance;
+    }
+
     public static function createFromComposerData($data)
     {
         $instance = new self();
@@ -54,6 +106,26 @@ class Config
             $instance->setConfig($data->extra->violinist);
         }
         return $instance;
+    }
+
+    public static function createFromViolinistConfigInPath($data, $file_path)
+    {
+        $instance = self::createFromViolinistConfig($data);
+        $instance = self::handleExtendFromInstanceAndData($instance, $data, $file_path);
+        return $instance;
+    }
+
+    public static function createFromViolinistConfig($data)
+    {
+        $instance = new self();
+        $instance->setConfig($data);
+        return $instance;
+    }
+
+    public static function createFromViolinistConfigJsonString(string $data)
+    {
+        $json_data = json_decode($data, false, 512, JSON_THROW_ON_ERROR);
+        return self::createFromViolinistConfig($json_data);
     }
 
     public function setConfig($config)
@@ -70,11 +142,14 @@ class Config
             'blacklist' => 'blocklist',
             'block_list' => 'blocklist',
             'allowlist' => 'allow_list',
-        ] ;
+        ];
         foreach ($renamed_and_aliased as $not_real => $real) {
             if (isset($config->{$not_real})) {
                 $this->config->{$real} = $config->{$not_real};
             }
+        }
+        if (!empty($config->rules)) {
+            $this->config->rules = $config->rules;
         }
     }
 
@@ -353,5 +428,40 @@ class Config
         }
 
         return $this->config->commit_message_convention;
+    }
+
+    public function getConfigForPackage(string $package_name) : self
+    {
+        if (empty($this->config->rules)) {
+            return $this;
+        }
+        $new_config = clone $this->config;
+        foreach ($this->config->rules as $rule) {
+            if (empty($rule->config)) {
+                continue;
+            }
+            $matches = $this->getMatcherFactory()->hasMatches($rule, $package_name);
+            if (!$matches) {
+                continue;
+            }
+            // Then merge the config for this rule.
+            $this->mergeConfig($new_config, $rule->config);
+        }
+        return self::createFromViolinistConfig($new_config);
+    }
+
+    protected function mergeConfig(\stdClass $config, \stdClass $other)
+    {
+        foreach ($other as $key => $value) {
+            $config->{$key} = $value;
+        }
+    }
+
+    public function getMatcherFactory() : MatcherFactory
+    {
+        if (!$this->matcherFactory) {
+            $this->matcherFactory = new MatcherFactory();
+        }
+        return $this->matcherFactory;
     }
 }

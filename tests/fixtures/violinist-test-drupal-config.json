@@ -1,0 +1,23 @@
+{
+  "update_dev_dependencies": 1,
+  "rules": [
+    {
+      "name": "Minor and Patch Contrib",
+      "slug": "minor-and-patch-contrib",
+      "matchRules": [
+        {
+          "type": "names",
+          "values": [
+            "drupal/*",
+            "!drupal/core-composer-scaffold",
+            "!drupal/core-project-message",
+            "!drupal/core-recommended"
+          ]
+        }
+      ],
+      "config": {
+        "update_dev_dependencies": 0
+      }
+    }
+  ]
+}

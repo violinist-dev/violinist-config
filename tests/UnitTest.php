@@ -395,7 +395,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getUpdateWithDeps()
+    public static function getUpdateWithDeps()
     {
         return [
             [
@@ -421,7 +421,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getAutoMerge()
+    public static function getAutoMerge()
     {
         return [
             [
@@ -447,11 +447,11 @@ class UnitTest extends TestCase
             [
                 'automerge5.json',
                 false,
-            ]
+            ],
         ];
     }
 
-    public function getAutoMergeSecurity()
+    public static function getAutoMergeSecurity()
     {
         return [
             [
@@ -493,7 +493,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getAutoMergeMethod()
+    public static function getAutoMergeMethod()
     {
         return [
             [
@@ -547,11 +547,11 @@ class UnitTest extends TestCase
             [
                 'automerge_method_security6.json',
                 'merge',
-            ]
+            ],
         ];
     }
 
-    public function getAutoMergeMethodSecurity()
+    public static function getAutoMergeMethodSecurity()
     {
         return [
             [
@@ -605,11 +605,11 @@ class UnitTest extends TestCase
             [
                 'automerge_method_security6.json',
                 'merge',
-            ]
+            ],
         ];
     }
 
-    public function getAlwaysUpdateAll()
+    public static function getAlwaysUpdateAll()
     {
         return [
             [
@@ -635,11 +635,11 @@ class UnitTest extends TestCase
             [
                 'always_all5.json',
                 true,
-            ]
+            ],
         ];
     }
 
-    public function getAllowUpdateDirect()
+    public static function getAllowUpdateDirect()
     {
         return [
             [
@@ -662,7 +662,7 @@ class UnitTest extends TestCase
     }
 
 
-    public function getUpdatesBeyondConstraint()
+    public static function getUpdatesBeyondConstraint()
     {
         return [
             [
@@ -688,7 +688,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getOnePrPerPackage()
+    public static function getOnePrPerPackage()
     {
         return [
             [
@@ -714,7 +714,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getAssignees()
+    public static function getAssignees()
     {
         return [
             [
@@ -732,13 +732,13 @@ class UnitTest extends TestCase
             [
                 'assignees3.json',
                 [
-                    "test_user"
+                    "test_user",
                 ],
             ],
         ];
     }
 
-    public function getBranchPrefix()
+    public static function getBranchPrefix()
     {
         return [
             [
@@ -760,7 +760,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getTimeframes()
+    public static function getTimeframes()
     {
         return [
             [
@@ -787,7 +787,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getTimezone()
+    public static function getTimezone()
     {
         return [
             [
@@ -813,7 +813,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getCommitMessage()
+    public static function getCommitMessage()
     {
         return [
             [
@@ -835,7 +835,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getLabelsConfig()
+    public static function getLabelsConfig()
     {
         return [
             [
@@ -869,7 +869,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getLabelsSecurityConfig()
+    public static function getLabelsSecurityConfig()
     {
         return [
             [
@@ -903,33 +903,33 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getHasConfig()
+    public static function getHasConfig()
     {
         return [
             [
                 'empty.json',
                 'one_pull_request_per_package',
-                false
+                false,
             ],
             [
                 'empty.json',
                 'bogus_option',
-                false
+                false,
             ],
             [
                 'check_only_direct_dependencies5.json',
                 'check_only_direct_dependencies',
-                true
+                true,
             ],
             [
                 'bundled_packages4.json',
                 'bundled_packages',
-                true
+                true,
             ],
             [
                 'bundled_packages4.json',
                 'blocklist',
-                false
+                false,
             ],
         ];
     }
@@ -937,7 +937,7 @@ class UnitTest extends TestCase
     /**
      * A data provider.
      */
-    public function emptyConfigs()
+    public static function emptyConfigs()
     {
         return [
             ['empty.json'],
@@ -949,7 +949,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getIgnorePlatform()
+    public static function getIgnorePlatform()
     {
         return [
             [
@@ -958,28 +958,28 @@ class UnitTest extends TestCase
             ],
             [
                 'ignore_platform.json',
-                true
+                true,
             ],
             [
                 'ignore_platform2.json',
-                true
+                true,
             ],
             [
                 'ignore_platform3.json',
-                true
+                true,
             ],
             [
                 'ignore_platform4.json',
-                false
+                false,
             ],
             [
                 'ignore_platform5.json',
-                false
+                false,
             ],
         ];
     }
 
-    public function getAlwaysAllowDirect()
+    public static function getAlwaysAllowDirect()
     {
         return [
             [
@@ -988,66 +988,66 @@ class UnitTest extends TestCase
             ],
             [
                 'always_allow_direct_dependencies.json',
-                true
+                true,
             ],
             [
                 'always_allow_direct_dependencies2.json',
-                true
+                true,
             ],
             [
                 'always_allow_direct_dependencies3.json',
-                true
+                true,
             ],
             [
                 'always_allow_direct_dependencies4.json',
-                false
+                false,
             ],
             [
                 'always_allow_direct_dependencies5.json',
-                false
+                false,
             ],
         ];
     }
 
-    public function getRunScriptData()
+    public static function getRunScriptData()
     {
         return [
             [
                 'run_scripts.json',
-                false
+                false,
             ],
             [
                 'run_scripts2.json',
-                true
+                true,
             ],
             [
                 'run_scripts3.json',
-                false
+                false,
             ],
             [
                 'run_scripts4.json',
-                true
+                true,
             ],
             [
                 'run_scripts5.json',
-                false
+                false,
             ],
             [
                 'run_scripts6.json',
-                true
+                true,
             ],
             [
                 'run_scripts7.json',
-                true
+                true,
             ],
             [
                 'run_scripts8.json',
-                true
-            ]
+                true,
+            ],
         ];
     }
 
-    public function getBundledOptionsForGetter()
+    public static function getBundledOptionsForGetter()
     {
         return [
             [
@@ -1069,7 +1069,7 @@ class UnitTest extends TestCase
             [
                 'bundled_packages4.json',
                 [
-                    'psr/log'
+                    'psr/log',
                 ],
             ],
             [
@@ -1079,11 +1079,11 @@ class UnitTest extends TestCase
             [
                 'bundled_packages6.json',
                 [],
-            ]
+            ],
         ];
     }
 
-    public function getBundledOptions()
+    public static function getBundledOptions()
     {
         return [
             [
@@ -1101,23 +1101,23 @@ class UnitTest extends TestCase
             [
                 'bundled_packages4.json',
                 [
-                    "symfony/console"
+                    "symfony/console",
                 ],
             ],
             [
                 'bundled_packages5.json',
                 [],
-                true
+                true,
             ],
             [
                 'bundled_packages6.json',
                 [],
-                true
-            ]
+                true,
+            ],
         ];
     }
 
-    public function getAllowList()
+    public static function getAllowList()
     {
         return [
             [
@@ -1127,13 +1127,13 @@ class UnitTest extends TestCase
             [
                 'allow_list2.json',
                 [
-                    "vendor/package"
+                    "vendor/package",
                 ],
             ],
             [
                 'allow_list3.json',
                 [
-                    "vendor/package"
+                    "vendor/package",
                 ],
             ],
             [
@@ -1143,7 +1143,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getBlackList()
+    public static function getBlackList()
     {
         return [
             [
@@ -1153,7 +1153,7 @@ class UnitTest extends TestCase
             [
                 'blocklist2.json',
                 [
-                    "package1"
+                    "package1",
                 ],
             ],
             [
@@ -1164,7 +1164,7 @@ class UnitTest extends TestCase
                 'blocklist4.json',
                 [
                     "package1",
-                    "vendor/*"
+                    "vendor/*",
                 ],
             ],
             [
@@ -1174,7 +1174,7 @@ class UnitTest extends TestCase
             [
                 'blocklist6.json',
                 [
-                    "package1"
+                    "package1",
                 ],
             ],
             [
@@ -1185,13 +1185,13 @@ class UnitTest extends TestCase
                 'blocklist8.json',
                 [
                     "package1",
-                    "vendor/*"
+                    "vendor/*",
                 ],
             ],
         ];
     }
 
-    public function getDefaultBranch()
+    public static function getDefaultBranch()
     {
         return [
             [
@@ -1209,7 +1209,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getUpdateDevDependencies()
+    public static function getUpdateDevDependencies()
     {
         return [
             [
@@ -1247,7 +1247,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getSecurityUpdates()
+    public static function getSecurityUpdates()
     {
         return [
             [
@@ -1288,7 +1288,7 @@ class UnitTest extends TestCase
     /**
      * Data provider for testAllowSecurityUpdatesOnConcurrentLimit.
      */
-    public function getAllowSecurityUpdatesOnConcurrentLimitDataProvider()
+    public static function getAllowSecurityUpdatesOnConcurrentLimitDataProvider()
     {
         return [
             ['empty.json', false],
@@ -1297,7 +1297,7 @@ class UnitTest extends TestCase
         ];
     }
 
-    public function getOnlyDirectDependencies()
+    public static function getOnlyDirectDependencies()
     {
         return [
             [
