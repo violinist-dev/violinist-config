@@ -47,7 +47,6 @@ class Config
             'automerge_method_security' => 'merge',
             'labels' => [],
             'labels_security' => [],
-            'rules' => [],
         ];
     }
 
