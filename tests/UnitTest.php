@@ -447,7 +447,7 @@ class UnitTest extends TestCase
             [
                 'automerge5.json',
                 false,
-            ]
+            ],
         ];
     }
 
@@ -547,7 +547,7 @@ class UnitTest extends TestCase
             [
                 'automerge_method_security6.json',
                 'merge',
-            ]
+            ],
         ];
     }
 
@@ -605,7 +605,7 @@ class UnitTest extends TestCase
             [
                 'automerge_method_security6.json',
                 'merge',
-            ]
+            ],
         ];
     }
 
@@ -635,7 +635,7 @@ class UnitTest extends TestCase
             [
                 'always_all5.json',
                 true,
-            ]
+            ],
         ];
     }
 
@@ -732,7 +732,7 @@ class UnitTest extends TestCase
             [
                 'assignees3.json',
                 [
-                    "test_user"
+                    "test_user",
                 ],
             ],
         ];
@@ -909,27 +909,27 @@ class UnitTest extends TestCase
             [
                 'empty.json',
                 'one_pull_request_per_package',
-                false
+                false,
             ],
             [
                 'empty.json',
                 'bogus_option',
-                false
+                false,
             ],
             [
                 'check_only_direct_dependencies5.json',
                 'check_only_direct_dependencies',
-                true
+                true,
             ],
             [
                 'bundled_packages4.json',
                 'bundled_packages',
-                true
+                true,
             ],
             [
                 'bundled_packages4.json',
                 'blocklist',
-                false
+                false,
             ],
         ];
     }
@@ -958,23 +958,23 @@ class UnitTest extends TestCase
             ],
             [
                 'ignore_platform.json',
-                true
+                true,
             ],
             [
                 'ignore_platform2.json',
-                true
+                true,
             ],
             [
                 'ignore_platform3.json',
-                true
+                true,
             ],
             [
                 'ignore_platform4.json',
-                false
+                false,
             ],
             [
                 'ignore_platform5.json',
-                false
+                false,
             ],
         ];
     }
@@ -988,23 +988,23 @@ class UnitTest extends TestCase
             ],
             [
                 'always_allow_direct_dependencies.json',
-                true
+                true,
             ],
             [
                 'always_allow_direct_dependencies2.json',
-                true
+                true,
             ],
             [
                 'always_allow_direct_dependencies3.json',
-                true
+                true,
             ],
             [
                 'always_allow_direct_dependencies4.json',
-                false
+                false,
             ],
             [
                 'always_allow_direct_dependencies5.json',
-                false
+                false,
             ],
         ];
     }
@@ -1014,36 +1014,36 @@ class UnitTest extends TestCase
         return [
             [
                 'run_scripts.json',
-                false
+                false,
             ],
             [
                 'run_scripts2.json',
-                true
+                true,
             ],
             [
                 'run_scripts3.json',
-                false
+                false,
             ],
             [
                 'run_scripts4.json',
-                true
+                true,
             ],
             [
                 'run_scripts5.json',
-                false
+                false,
             ],
             [
                 'run_scripts6.json',
-                true
+                true,
             ],
             [
                 'run_scripts7.json',
-                true
+                true,
             ],
             [
                 'run_scripts8.json',
-                true
-            ]
+                true,
+            ],
         ];
     }
 
@@ -1069,7 +1069,7 @@ class UnitTest extends TestCase
             [
                 'bundled_packages4.json',
                 [
-                    'psr/log'
+                    'psr/log',
                 ],
             ],
             [
@@ -1079,7 +1079,7 @@ class UnitTest extends TestCase
             [
                 'bundled_packages6.json',
                 [],
-            ]
+            ],
         ];
     }
 
@@ -1101,19 +1101,19 @@ class UnitTest extends TestCase
             [
                 'bundled_packages4.json',
                 [
-                    "symfony/console"
+                    "symfony/console",
                 ],
             ],
             [
                 'bundled_packages5.json',
                 [],
-                true
+                true,
             ],
             [
                 'bundled_packages6.json',
                 [],
-                true
-            ]
+                true,
+            ],
         ];
     }
 
@@ -1127,13 +1127,13 @@ class UnitTest extends TestCase
             [
                 'allow_list2.json',
                 [
-                    "vendor/package"
+                    "vendor/package",
                 ],
             ],
             [
                 'allow_list3.json',
                 [
-                    "vendor/package"
+                    "vendor/package",
                 ],
             ],
             [
@@ -1153,7 +1153,7 @@ class UnitTest extends TestCase
             [
                 'blocklist2.json',
                 [
-                    "package1"
+                    "package1",
                 ],
             ],
             [
@@ -1164,7 +1164,7 @@ class UnitTest extends TestCase
                 'blocklist4.json',
                 [
                     "package1",
-                    "vendor/*"
+                    "vendor/*",
                 ],
             ],
             [
@@ -1174,7 +1174,7 @@ class UnitTest extends TestCase
             [
                 'blocklist6.json',
                 [
-                    "package1"
+                    "package1",
                 ],
             ],
             [
@@ -1185,7 +1185,7 @@ class UnitTest extends TestCase
                 'blocklist8.json',
                 [
                     "package1",
-                    "vendor/*"
+                    "vendor/*",
                 ],
             ],
         ];
