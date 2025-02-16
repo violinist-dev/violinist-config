@@ -465,10 +465,4 @@ class Config
         }
         return $this->matcherFactory;
     }
-
-    public function setMatcherFactory(MatcherFactory $factory) : self
-    {
-        $this->matcherFactory = $factory;
-        return $this;
-    }
 }

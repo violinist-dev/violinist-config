@@ -107,6 +107,22 @@ class UnitTest extends TestCase
                     'symfony/yaml' => true,
                 ],
             ],
+            [
+                'file' => 'violinist-test-config-empty-rules',
+                'expected' => [
+                    'default' => true,
+                    'drupal/metatag' => true,
+                    'symfony/yaml' => true,
+                ],
+            ],
+            [
+                'file' => 'violinist-test-empty-config-rules',
+                'expected' => [
+                    'default' => true,
+                    'drupal/metatag' => true,
+                    'symfony/yaml' => true,
+                ],
+            ],
         ];
     }
 }
