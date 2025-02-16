@@ -26,5 +26,4 @@ class MatcherFactoryTest extends TestCase
         $factory = new MatcherFactory();
         self::assertFalse($factory->hasMatches($rule, 'drupal/core'));
     }
-
 }
