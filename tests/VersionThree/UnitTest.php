@@ -27,6 +27,67 @@ class UnitTest extends TestCase
         // Let's test the new format first (this is the contents of the new
         // format).
         $config = Config::createFromViolinistConfigJsonString($data);
+        self::assertConfigIsOverwrittenAndCorrect($config);
+        // Now create a temporary composer.json file.
+        $composer_data = (object) [
+            'extra' => (object) [
+                'violinist' => json_decode($data),
+            ],
+        ];
+        $config = Config::createFromComposerData($composer_data);
+        self::assertConfigIsOverwrittenAndCorrect($config);
+        $temp_folder = sys_get_temp_dir() . '/' . uniqid();
+        mkdir($temp_folder);
+        $composer_data = (object) [
+            'extra' => (object) [
+                'violinist' => (object) [
+                    'extends' => 'temp.json',
+                ],
+            ],
+        ];
+        $composer_path = $temp_folder . '/composer.json';
+        file_put_contents($composer_path, json_encode($composer_data));
+        file_put_contents($temp_folder . '/temp.json', $data);
+        $config = Config::createFromComposerPath($composer_path);
+        self::assertConfigIsOverwrittenAndCorrect($config);
+        $temp_folder = sys_get_temp_dir() . '/' . uniqid();
+        mkdir($temp_folder);
+        mkdir("$temp_folder/vendor");
+        mkdir("$temp_folder/vendor/vendor");
+        mkdir("$temp_folder/vendor/vendor/package");
+        $composer_data = (object) [
+            'extra' => (object) [
+                'violinist' => (object) [
+                    'extends' => 'vendor/package',
+                ],
+            ],
+        ];
+        $composer_path = $temp_folder . '/composer.json';
+        file_put_contents($composer_path, json_encode($composer_data));
+        file_put_contents($temp_folder . '/vendor/vendor/package/' . Config::VIOLINIST_CONFIG_FILE, $data);
+        $config = Config::createFromComposerPath($composer_path);
+        self::assertConfigIsOverwrittenAndCorrect($config);
+        $temp_folder = sys_get_temp_dir() . '/' . uniqid();
+        mkdir($temp_folder);
+        mkdir("$temp_folder/vendor");
+        mkdir("$temp_folder/vendor/vendor");
+        mkdir("$temp_folder/vendor/vendor/package");
+        $composer_data = (object) [
+            'extra' => (object) [
+                'violinist' => (object) [
+                    'extends' => 'vendor/package/clever-person.json',
+                ],
+            ],
+        ];
+        $composer_path = $temp_folder . '/composer.json';
+        file_put_contents($composer_path, json_encode($composer_data));
+        file_put_contents($temp_folder . '/vendor/vendor/package/clever-person.json', $data);
+        $config = Config::createFromComposerPath($composer_path);
+        self::assertConfigIsOverwrittenAndCorrect($config);
+    }
+
+    public static function assertConfigIsOverwrittenAndCorrect(Config $config)
+    {
         self::assertEquals(true, $config->shouldUpdateDevDependencies());
         $config_for_package = $config->getConfigForPackage('drupal/metatag');
         self::assertEquals(true, $config->shouldUpdateDevDependencies());
