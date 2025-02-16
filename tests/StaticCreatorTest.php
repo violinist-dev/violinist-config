@@ -40,5 +40,4 @@ class StaticCreatorTest extends TestCase
             ],
         ];
     }
-
 }
