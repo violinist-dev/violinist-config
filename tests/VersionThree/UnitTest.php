@@ -27,7 +27,7 @@ class UnitTest extends TestCase
         // Let's test the new format first (this is the contents of the new
         // format).
         $config = Config::createFromViolinistConfigJsonString($data);
-        self::assertConfigIsOverwrittenAndCorrect($config);
+        self::assertConfigIsOverwrittenAndCorrect($config, $expected);
         // Now create a temporary composer.json file.
         $composer_data = (object) [
             'extra' => (object) [
@@ -35,7 +35,7 @@ class UnitTest extends TestCase
             ],
         ];
         $config = Config::createFromComposerData($composer_data);
-        self::assertConfigIsOverwrittenAndCorrect($config);
+        self::assertConfigIsOverwrittenAndCorrect($config, $expected);
         $temp_folder = sys_get_temp_dir() . '/' . uniqid();
         mkdir($temp_folder);
         $composer_data = (object) [
@@ -49,7 +49,7 @@ class UnitTest extends TestCase
         file_put_contents($composer_path, json_encode($composer_data));
         file_put_contents($temp_folder . '/temp.json', $data);
         $config = Config::createFromComposerPath($composer_path);
-        self::assertConfigIsOverwrittenAndCorrect($config);
+        self::assertConfigIsOverwrittenAndCorrect($config, $expected);
         $temp_folder = sys_get_temp_dir() . '/' . uniqid();
         mkdir($temp_folder);
         mkdir("$temp_folder/vendor");
@@ -66,7 +66,7 @@ class UnitTest extends TestCase
         file_put_contents($composer_path, json_encode($composer_data));
         file_put_contents($temp_folder . '/vendor/vendor/package/' . Config::VIOLINIST_CONFIG_FILE, $data);
         $config = Config::createFromComposerPath($composer_path);
-        self::assertConfigIsOverwrittenAndCorrect($config);
+        self::assertConfigIsOverwrittenAndCorrect($config, $expected);
         $temp_folder = sys_get_temp_dir() . '/' . uniqid();
         mkdir($temp_folder);
         mkdir("$temp_folder/vendor");
@@ -83,15 +83,17 @@ class UnitTest extends TestCase
         file_put_contents($composer_path, json_encode($composer_data));
         file_put_contents($temp_folder . '/vendor/vendor/package/clever-person.json', $data);
         $config = Config::createFromComposerPath($composer_path);
-        self::assertConfigIsOverwrittenAndCorrect($config);
+        self::assertConfigIsOverwrittenAndCorrect($config, $expected);
     }
 
-    public static function assertConfigIsOverwrittenAndCorrect(Config $config)
+    public static function assertConfigIsOverwrittenAndCorrect(Config $config, array $expected)
     {
-        self::assertEquals(true, $config->shouldUpdateDevDependencies());
-        $config_for_package = $config->getConfigForPackage('drupal/metatag');
-        self::assertEquals(true, $config->shouldUpdateDevDependencies());
-        self::assertEquals(false, $config_for_package->shouldUpdateDevDependencies());
+        self::assertEquals($expected['default'], $config->shouldUpdateDevDependencies());
+        foreach ($expected as $item => $value) {
+            $config_for_package = $config->getConfigForPackage($item);
+            self::assertEquals($expected['default'], $config->shouldUpdateDevDependencies());
+            self::assertEquals($value, $config_for_package->shouldUpdateDevDependencies());
+        }
     }
 
     public static function dataProviderOverridesConfigDrupalContrib()
@@ -100,9 +102,9 @@ class UnitTest extends TestCase
             [
                 'file' => 'violinist-test-drupal-config',
                 'expected' => [
-                    'drupal_contrib' => [
-                        'some' => 'override',
-                    ],
+                    'default' => true,
+                    'drupal/metatag' => false,
+                    'symfony/yaml' => true,
                 ],
             ],
         ];
