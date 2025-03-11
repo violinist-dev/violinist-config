@@ -34,6 +34,7 @@ class Config
             'timezone' => '+0000',
             'update_with_dependencies' => 1,
             'default_branch' => '',
+            'default_branch_security' => '',
             'run_scripts' => 1,
             'security_updates_only' => 0,
             'number_of_concurrent_updates' => 0,
@@ -392,8 +393,19 @@ class Config
         return (bool) $this->config->security_updates_only;
     }
 
-    public function getDefaultBranch()
+    public function getDefaultBranchSecurity()
     {
+        return $this->getDefaultBranch(true);
+    }
+
+    public function getDefaultBranch($is_security = false)
+    {
+        if ($is_security && !empty($this->config->default_branch_security)) {
+            return $this->config->default_branch_security;
+        }
+        if ($is_security && empty($this->config->default_branch_security)) {
+            return $this->getDefaultBranch();
+        }
         if (empty($this->config->default_branch)) {
             return false;
         }

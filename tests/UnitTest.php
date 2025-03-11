@@ -209,6 +209,17 @@ class UnitTest extends TestCase
     }
 
     /**
+     * Test the default branch config option.
+     *
+     * @dataProvider getDefaultBranchSec
+     */
+    public function testDefaultBranchSec($filename, $expected_result)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($expected_result, $data->getDefaultBranchSecurity());
+    }
+
+    /**
      * Test the update dev dependencies config option.
      *
      * @dataProvider getUpdateDevDependencies
@@ -1205,6 +1216,40 @@ class UnitTest extends TestCase
             [
                 'default_branch2.json',
                 'develop',
+            ],
+        ];
+    }
+
+    public static function getDefaultBranchSec()
+    {
+        return [
+            [
+                'empty.json',
+                '',
+            ],
+            [
+                'default_branch_security.json',
+                '',
+            ],
+            [
+                'default_branch_security2.json',
+                'develop',
+            ],
+            [
+                'default_branch_security3.json',
+                'main',
+            ],
+            [
+                'default_branch_security4.json',
+                'develop',
+            ],
+            [
+                'default_branch_security5.json',
+                '',
+            ],
+            [
+                'default_branch_security6.json',
+                'main',
             ],
         ];
     }
