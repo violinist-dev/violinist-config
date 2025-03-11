@@ -1,0 +1,8 @@
+{
+  "extra": {
+    "violinist": {
+      "default_branch": "develop",
+      "default_branch_security": "main"
+    }
+  }
+}
