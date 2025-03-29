@@ -444,7 +444,8 @@ class Config
 
     public function getConfigForPackage(string $package_name) : self
     {
-        if (empty($this->config->rules)) {
+        $rules = $this->getRules();
+        if (empty($rules)) {
             return $this;
         }
         $new_config = clone $this->config;
@@ -460,6 +461,14 @@ class Config
             $this->mergeConfig($new_config, $rule->config);
         }
         return self::createFromViolinistConfig($new_config);
+    }
+
+    public function getRules() : array
+    {
+        if (!empty($this->config->rules)) {
+            return $this->config->rules;
+        }
+        return [];
     }
 
     protected function mergeConfig(\stdClass $config, \stdClass $other)
