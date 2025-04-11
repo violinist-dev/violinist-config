@@ -1,0 +1,24 @@
+{
+  "extends": "vendor/shared-violinist-common",
+  "allow_list": [
+    "drupal/*",
+    "drush/drush",
+    "frontkom/*",
+    "nymediaas/*",
+    "roave/security-advisories",
+    "thunderer/*"
+  ],
+  "bundled_packages": {
+    "drupal/core-recommended": [
+      "drupal/core-composer-scaffold",
+      "drupal/core-dev",
+      "drupal/core",
+      "drush/drush"
+    ]
+  },
+  "blocklist": [
+    "drupal/core-composer-scaffold",
+    "drupal/core-dev",
+    "drupal/core"
+  ]
+}
