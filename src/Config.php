@@ -60,7 +60,7 @@ class Config
         return self::createFromComposerDataInPath($composer_data, $path);
     }
 
-    public static function createFromComposerDataInPath(\stdClass $data, string $path)
+    public static function createFromComposerDataInPath(\stdClass $data, string $path, string $initial_path = null)
     {
         // First we need the actual thing from the composer data.
         $instance = self::createFromComposerData($data);
@@ -68,12 +68,15 @@ class Config
         if (!empty($data->extra->violinist)) {
             $extra_data = $data->extra->violinist;
         }
-        $instance = self::handleExtendFromInstanceAndData($instance, $extra_data, $path);
+        $instance = self::handleExtendFromInstanceAndData($instance, $extra_data, $path, $initial_path);
         return $instance;
     }
 
-    public static function handleExtendFromInstanceAndData(Config $instance, $data, $path) : Config
+    public static function handleExtendFromInstanceAndData(Config $instance, $data, $path, $initial_path = null) : Config
     {
+        if (!$initial_path) {
+            $initial_path = dirname($path);
+        }
         // Now, is there a thing on the path in extends? Is there even
         // "extends"?
         if (empty($data->extends)) {
@@ -86,12 +89,24 @@ class Config
         $potential_places = [
             $extends_path,
             sprintf('%s/vendor/%s/%s', $directory, $extends, self::VIOLINIST_CONFIG_FILE),
+            sprintf('%s/vendor/%s/composer.json', $directory, $extends),
             sprintf('%s/vendor/%s', $directory, $extends),
         ];
+        if ($initial_path) {
+            $potential_places[] = sprintf('%s/vendor/%s/%s', $initial_path, $extends, self::VIOLINIST_CONFIG_FILE);
+            $potential_places[] = "$initial_path/vendor/$extends/composer.json";
+        }
         foreach ($potential_places as $potential_place) {
-            if (file_exists($potential_place)) {
+            if (file_exists($potential_place) && !is_dir($potential_place)) {
                 $extends_data = json_decode(file_get_contents($potential_place));
-                $extends_instance = self::createFromViolinistConfigInPath($extends_data, $potential_place);
+                if (!$extends_data) {
+                    continue;
+                }
+                $extends_instance = self::createFromViolinistConfigInPath($extends_data, $potential_place, $initial_path);
+                if (strpos($potential_place, 'composer.json') !== false) {
+                    // This is a composer.json file. Let's create it from that.
+                    $extends_instance = self::createFromComposerDataInPath($extends_data, $potential_place, $initial_path);
+                }
                 // Now merge the two.
                 $instance->mergeConfig($instance->config, $extends_instance->config);
                 break;
@@ -109,10 +124,10 @@ class Config
         return $instance;
     }
 
-    public static function createFromViolinistConfigInPath($data, $file_path)
+    public static function createFromViolinistConfigInPath($data, $file_path, $initial_path = null)
     {
         $instance = self::createFromViolinistConfig($data);
-        $instance = self::handleExtendFromInstanceAndData($instance, $data, $file_path);
+        $instance = self::handleExtendFromInstanceAndData($instance, $data, $file_path, $initial_path);
         return $instance;
     }
 
