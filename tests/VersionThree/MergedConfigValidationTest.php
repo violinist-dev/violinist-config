@@ -39,6 +39,6 @@ class MergedConfigValidationTest extends TestCase
         $expected = json_decode(file_get_contents(__DIR__ . '/../fixtures/violinist-expected-config.json'));
 
         // Compare final resolved config with expected
-        $this->assertEquals($expected, json_decode(json_encode($config->getConfig())));
+        $this->assertEquals($expected, json_decode(json_encode($config->config)));
     }
 }
