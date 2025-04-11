@@ -97,7 +97,7 @@ class Config
             $potential_places[] = "$initial_path/vendor/$extends/composer.json";
         }
         foreach ($potential_places as $potential_place) {
-            if (file_exists($potential_place)) {
+            if (file_exists($potential_place) && !is_dir($potential_place)) {
                 $extends_data = json_decode(file_get_contents($potential_place));
                 if (!$extends_data) {
                     continue;
