@@ -10,7 +10,7 @@ class InvalidDataExtendsTest extends TestCase
     public function testMultiLevelWithInvalidData()
     {
         // Let's start by creating a temp directory.
-        $temp_folder = sys_get_temp_dir() . '/' . uniqid();
+        $temp_folder = sys_get_temp_dir() . '/' . uniqid(__CLASS__, true);
         mkdir($temp_folder);
         $composer_data = (object) [
             'extra' => (object) [
