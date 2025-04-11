@@ -1,0 +1,38 @@
+{
+  "allow_list": [
+    "drupal/*",
+    "drush/drush",
+    "frontkom/*",
+    "nymediaas/*",
+    "roave/security-advisories",
+    "thunderer/*"
+  ],
+  "always_allow_direct_dependencies": true,
+  "automerge": true,
+  "automerge_method": "squash",
+  "bundled_packages": {
+    "drupal/core-recommended": [
+      "drupal/core-composer-scaffold",
+      "drupal/core-dev",
+      "drupal/core",
+      "drush/drush"
+    ]
+  },
+  "blocklist": [
+    "drupal/core-composer-scaffold",
+    "drupal/core-dev",
+    "drupal/core"
+  ],
+  "branch_prefix": "violinist/",
+  "check_only_direct_dependencies": false,
+  "commit_message_convention": "conventional",
+  "labels": [
+    "dependencies"
+  ],
+  "labels_security": [
+    "dependencies",
+    "security"
+  ],
+  "number_of_concurrent_updates": 5,
+  "allow_security_updates_on_concurrent_limit": true
+}
