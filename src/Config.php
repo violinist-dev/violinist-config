@@ -104,14 +104,8 @@ class Config
                 }
                 $extends_instance = self::createFromViolinistConfigInPath($extends_data, $potential_place, $initial_path);
                 if (strpos($potential_place, 'composer.json') !== false) {
-                    // This is a composer.json file. Let's remove the filename,
-                    // and pass it in here instead.
-                    try {
-                        $extends_instance = self::createFromComposerDataInPath($extends_data, $potential_place, $initial_path);
-                    } catch (\Throwable $e) {
-                        // Not goind to work very well, is it.
-                        continue;
-                    }
+                    // This is a composer.json file. Let's create it from that.
+                    $extends_instance = self::createFromComposerDataInPath($extends_data, $potential_place, $initial_path);
                 }
                 // Now merge the two.
                 $instance->mergeConfig($instance->config, $extends_instance->config);
