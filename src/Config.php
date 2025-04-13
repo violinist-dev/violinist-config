@@ -124,7 +124,7 @@ class Config
         return $instance;
     }
 
-    public static function createFromViolinistConfigInPath($data, $file_path, $initial_path = null)
+    public static function createFromViolinistConfigInPath($data, $file_path, $initial_path = '')
     {
         $instance = self::createFromViolinistConfig($data);
         $instance = self::handleExtendFromInstanceAndData($instance, $data, $file_path, $initial_path);
