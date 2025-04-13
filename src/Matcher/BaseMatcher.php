@@ -48,4 +48,6 @@ abstract class BaseMatcher implements MatcherInterface
         }
         return !empty($matches) && !in_array(false, $matches);
     }
+
+    abstract protected function matchRule($rule, string $name);
 }
