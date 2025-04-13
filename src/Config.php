@@ -60,7 +60,7 @@ class Config
         return self::createFromComposerDataInPath($composer_data, $path);
     }
 
-    public static function createFromComposerDataInPath(\stdClass $data, string $path, string $initial_path = null)
+    public static function createFromComposerDataInPath(\stdClass $data, string $path, string $initial_path = '')
     {
         // First we need the actual thing from the composer data.
         $instance = self::createFromComposerData($data);
@@ -72,7 +72,7 @@ class Config
         return $instance;
     }
 
-    public static function handleExtendFromInstanceAndData(Config $instance, $data, $path, $initial_path = null) : Config
+    public static function handleExtendFromInstanceAndData(Config $instance, $data, $path, $initial_path = '') : Config
     {
         if (!$initial_path) {
             $initial_path = dirname($path);
@@ -124,7 +124,7 @@ class Config
         return $instance;
     }
 
-    public static function createFromViolinistConfigInPath($data, $file_path, $initial_path = null)
+    public static function createFromViolinistConfigInPath($data, $file_path, $initial_path = '')
     {
         $instance = self::createFromViolinistConfig($data);
         $instance = self::handleExtendFromInstanceAndData($instance, $data, $file_path, $initial_path);
