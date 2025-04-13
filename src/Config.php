@@ -60,7 +60,7 @@ class Config
         return self::createFromComposerDataInPath($composer_data, $path);
     }
 
-    public static function createFromComposerDataInPath(\stdClass $data, string $path, string $initial_path = '')
+    public static function createFromComposerDataInPath(\stdClass $data, string $path, string $initial_path = null)
     {
         // First we need the actual thing from the composer data.
         $instance = self::createFromComposerData($data);
