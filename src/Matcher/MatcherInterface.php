@@ -6,5 +6,4 @@ interface MatcherInterface
 {
     public function applies(): bool;
     public function match(string $name): bool;
-    protected function matchRule($rule, string $name);
 }
