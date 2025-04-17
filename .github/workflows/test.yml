@@ -47,6 +47,9 @@ jobs:
       - name: Run tests
         run: composer test
 
+      - name: phpstan
+        run: composer phpstan
+
       - name: Coveralls
         if: matrix.php-version == 8.2
         env:
