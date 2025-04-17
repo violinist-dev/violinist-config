@@ -115,6 +115,11 @@ class Config
         return $instance;
     }
 
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
     public static function createFromComposerData($data)
     {
         $instance = new self();
@@ -488,7 +493,19 @@ class Config
 
     protected function mergeConfig(\stdClass $config, \stdClass $other)
     {
+        $default_config = $this->getDefaultConfig();
         foreach ($other as $key => $value) {
+            // If the value corresponds to the default config, we don't need to
+            // set it.
+            if (isset($default_config->{$key}) && $default_config->{$key} === $value) {
+                continue;
+            }
+            // This special case is because the default config is a stdclass,
+            // and that will not pass the strict equal test. So let's just
+            // loosen it up a bit for this specific case.
+            if ($key === 'bundled_packages' && $default_config->{$key} == $value) {
+                continue;
+            }
             $config->{$key} = $value;
         }
     }
