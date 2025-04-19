@@ -554,7 +554,7 @@ class Config
                 continue;
             }
             // Then merge the config for this rule.
-            $this->mergeConfigFromConfigObject($new_config, $rule->config, $rule->name);
+            $this->mergeConfigFromConfigObject($new_config, $rule->config);
         }
         return self::createFromViolinistConfig($new_config);
     }
