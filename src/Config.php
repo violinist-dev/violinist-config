@@ -7,12 +7,84 @@ class Config
     private $config;
     private $configOptionsSet = [];
     private $matcherFactory;
+    private $extendsChain = [];
+    private $extendsStorage;
 
     const VIOLINIST_CONFIG_FILE = 'violinist-config.json';
 
     public function __construct()
     {
         $this->config = $this->getDefaultConfig();
+        $this->extendsStorage = new ExtendsStorage();
+    }
+
+    public function getExtendsStorage()
+    {
+        return $this->extendsStorage;
+    }
+
+    public function getReadableChainForExtendName(string $name) : string
+    {
+        $chain = [$name];
+        while (true) {
+            $has_parent = false;
+            foreach ($this->extendsChain as $parent => $child) {
+                if ($child === $name) {
+                    $has_parent = true;
+                    if ($parent === '<root>') {
+                        break 2;
+                    }
+                    $chain[] = $parent;
+                    $name = $parent;
+                    break;
+                }
+            }
+            if ($has_parent) {
+                continue;
+            }
+            throw new \RuntimeException('Could not find the parent of ' . $name . ' in extends chain');
+        }
+        $chain = array_reverse($chain);
+        $chain = array_map(function ($item) {
+            return sprintf('"%s"', $item);
+        }, $chain);
+        return implode(' -> ', $chain);
+    }
+
+    public function getExtendNameForKey(string $key) : string
+    {
+        // First find all the ones that actually are setting this in config.
+        $extend_names = [];
+        foreach ($this->extendsStorage->getExtendItems() as $extend_name => $items) {
+            foreach ($items as $item) {
+                if ($item->getKey() === $key) {
+                    $extend_names[] = $extend_name;
+                }
+            }
+        }
+        // Now we need to consult our chain to see if we can find one on the
+        // lowest level.
+        $extend_name = '';
+        foreach ($extend_names as $extend_name) {
+            // Let's see if we can find a parent for it.
+            foreach ($this->extendsChain as $parent => $child) {
+                if ($child === $extend_name) {
+                    // This means we have a parent for it. Let's see if we can
+                    // find the parent in the list of extend names.
+                    if (in_array($parent, $extend_names)) {
+                        // Surely not it. Since the child sets it, it can not be
+                        // the parent. So remove it from the extend names array.
+                        $extend_names = array_diff($extend_names, [$parent]);
+                    }
+                }
+            }
+        }
+        if (count($extend_names) === 0) {
+            return '';
+        }
+        // At this point, hopefully we will have a single extend name left in
+        // the array. If not, we will just return the first one.
+        return reset($extend_names);
     }
 
     public function getDefaultConfig()
@@ -60,7 +132,7 @@ class Config
         return self::createFromComposerDataInPath($composer_data, $path);
     }
 
-    public static function createFromComposerDataInPath(\stdClass $data, string $path, string $initial_path = '')
+    public static function createFromComposerDataInPath(\stdClass $data, string $path, string $initial_path = '', $parent = '')
     {
         // First we need the actual thing from the composer data.
         $instance = self::createFromComposerData($data);
@@ -68,11 +140,11 @@ class Config
         if (!empty($data->extra->violinist)) {
             $extra_data = $data->extra->violinist;
         }
-        $instance = self::handleExtendFromInstanceAndData($instance, $extra_data, $path, $initial_path);
+        $instance = self::handleExtendFromInstanceAndData($instance, $extra_data, $path, $initial_path, $parent);
         return $instance;
     }
 
-    public static function handleExtendFromInstanceAndData(Config $instance, $data, $path, $initial_path = '') : Config
+    public static function handleExtendFromInstanceAndData(Config $instance, $data, $path, $initial_path = '', $parent = '') : Config
     {
         if (!$initial_path) {
             $initial_path = dirname($path);
@@ -102,13 +174,20 @@ class Config
                 if (!$extends_data) {
                     continue;
                 }
-                $extends_instance = self::createFromViolinistConfigInPath($extends_data, $potential_place, $initial_path);
+                $extends_instance = self::createFromViolinistConfigInPath($extends_data, $potential_place, $initial_path, $extends);
                 if (strpos($potential_place, 'composer.json') !== false) {
                     // This is a composer.json file. Let's create it from that.
-                    $extends_instance = self::createFromComposerDataInPath($extends_data, $potential_place, $initial_path);
+                    $extends_instance = self::createFromComposerDataInPath($extends_data, $potential_place, $initial_path, $extends);
                 }
                 // Now merge the two.
-                $instance->mergeConfig($instance->config, $extends_instance->config);
+                $extends_key = $parent;
+                if (!$extends_key) {
+                    $extends_key = '<root>';
+                }
+                // Copy over the extends chain to the new instance.
+                $instance->extendsChain = $extends_instance->extendsChain;
+                $instance->extendsChain[$extends_key] = $extends;
+                $instance->mergeConfig($extends_instance, $extends, $parent);
                 break;
             }
         }
@@ -129,10 +208,10 @@ class Config
         return $instance;
     }
 
-    public static function createFromViolinistConfigInPath($data, $file_path, $initial_path = '')
+    public static function createFromViolinistConfigInPath($data, $file_path, $initial_path = '', $parent = '')
     {
         $instance = self::createFromViolinistConfig($data);
-        $instance = self::handleExtendFromInstanceAndData($instance, $data, $file_path, $initial_path);
+        $instance = self::handleExtendFromInstanceAndData($instance, $data, $file_path, $initial_path, $parent);
         return $instance;
     }
 
@@ -478,7 +557,7 @@ class Config
                 continue;
             }
             // Then merge the config for this rule.
-            $this->mergeConfig($new_config, $rule->config);
+            $this->mergeConfigFromConfigObject($new_config, $rule->config);
         }
         return self::createFromViolinistConfig($new_config);
     }
@@ -491,8 +570,19 @@ class Config
         return [];
     }
 
-    protected function mergeConfig(\stdClass $config, \stdClass $other)
+    protected function mergeConfig(Config $other, $extends_name, $parent)
     {
+        $keys_and_values_affected = $this->mergeConfigFromConfigObject($this->getConfig(), $other->getConfig());
+        $this->extendsStorage->addExtendItems($other->getExtendsStorage()->getExtendItems());
+        foreach ($keys_and_values_affected as $key => $value) {
+            $this->configOptionsSet[$key] = true;
+            $this->extendsStorage->addExtendItem(new ExtendsChainItem($extends_name, $key, $value));
+        }
+    }
+
+    protected function mergeConfigFromConfigObject(\stdClass $config, \stdClass $other) : array
+    {
+        $affected = [];
         $default_config = $this->getDefaultConfig();
         foreach ($other as $key => $value) {
             // If the value corresponds to the default config, we don't need to
@@ -507,7 +597,9 @@ class Config
                 continue;
             }
             $config->{$key} = $value;
+            $affected[$key] = $value;
         }
+        return $affected;
     }
 
     public function getMatcherFactory() : MatcherFactory
