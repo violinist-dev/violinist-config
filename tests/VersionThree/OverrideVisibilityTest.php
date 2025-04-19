@@ -2,9 +2,6 @@
 
 namespace Violinist\Config\Tests\VersionThree;
 
-use PHPUnit\Framework\TestCase;
-use Violinist\Config\Config;
-
 class OverrideVisibilityTest extends NestedLevelExampleBase
 {
     public function testExtendChain()
