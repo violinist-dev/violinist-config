@@ -51,7 +51,7 @@ class Config
         return implode(' -> ', $chain);
     }
 
-    public function getExtendNameForKey(string $key)
+    public function getExtendNameForKey(string $key) : string
     {
         // First find all the ones that actually are setting this in config.
         $extend_names = [];
@@ -78,6 +78,9 @@ class Config
                     }
                 }
             }
+        }
+        if (count($extend_names) === 0) {
+            return '';
         }
         // At this point, hopefully we will have a single extend name left in
         // the array. If not, we will just return the first one.
