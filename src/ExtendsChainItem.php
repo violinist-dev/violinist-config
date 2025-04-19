@@ -23,8 +23,4 @@ class ExtendsChainItem
     {
         return $this->key;
     }
-    public function getValue()
-    {
-        return $this->value;
-    }
 }

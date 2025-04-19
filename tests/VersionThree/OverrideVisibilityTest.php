@@ -19,4 +19,11 @@ class OverrideVisibilityTest extends NestedLevelExampleBase
         $config_that_set_key = $config->getExtendNameForKey('always_update_all');
         self::assertEquals('', $config_that_set_key);
     }
+
+    public function testInvalidExtendName()
+    {
+        $config = $this->config;
+        self::expectException(\RuntimeException::class);
+        $readable = $config->getReadableChainForExtendName('invalid_key');
+    }
 }

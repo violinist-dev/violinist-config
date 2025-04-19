@@ -602,11 +602,6 @@ class Config
         return $affected;
     }
 
-    public function getExtendsChain()
-    {
-        return $this->extendsChain;
-    }
-
     public function getMatcherFactory() : MatcherFactory
     {
         if (!$this->matcherFactory) {
