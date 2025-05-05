@@ -57,5 +57,27 @@ class MultiLevelUnitTest extends TestCase
         // Alright let's retrieve the config from the top level.
         $config = Config::createFromComposerPath($composer_path);
         self::assertEquals($config->getBranchPrefix(), 'violinist/');
+        // Let's retrieve one from level 2.
+        $block_list = $config->getBlockList();
+        self::assertTrue(in_array('drupal/core', $block_list));
+        // Now let's overwrite them on the top level.
+        $composer_data = (object) [
+            'extra' => (object) [
+                'violinist' => (object) [
+                    'branch_prefix' => 'test',
+                    'blocklist' => ['drupal/core-o-rama', 'drupal/core-8'],
+                    'extends' => 'vendor/shared-violinist-drupal',
+                ],
+            ],
+        ];
+        file_put_contents($composer_path, json_encode($composer_data));
+        $config = Config::createFromComposerPath($composer_path);
+        // Let's check the block list again.
+        $block_list = $config->getBlockList();
+        self::assertTrue(in_array('drupal/core-o-rama', $block_list));
+        self::assertTrue(in_array('drupal/core-8', $block_list));
+        self::assertFalse(in_array('drupal/core', $block_list));
+        // Let's check the branch prefix.
+        self::assertEquals($config->getBranchPrefix(), 'test');
     }
 }
