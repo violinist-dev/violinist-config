@@ -596,6 +596,20 @@ class Config
             if ($key === 'bundled_packages' && $default_config->{$key} == $value) {
                 continue;
             }
+            // If our option is set, but not set to the default, let's not merge
+            // it.
+            if (isset($default_config->{$key}) && isset($config->{$key})) {
+                // Special case for bundled packages again.
+                if ($key === 'bundled_packages') {
+                    if ($config->{$key} != $default_config->{$key}) {
+                        continue;
+                    }
+                } else {
+                    if ($config->{$key} !== $default_config->{$key}) {
+                        continue;
+                    }
+                }
+            }
             $config->{$key} = $value;
             $affected[$key] = $value;
         }
