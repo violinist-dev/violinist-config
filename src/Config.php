@@ -541,8 +541,22 @@ class Config
         return $this->config->commit_message_convention;
     }
 
+    public function getConfigForRuleObject(\stdClass $rule_object)
+    {
+        // @todo: This is a bit duplication from below actually. Specifically
+        // the method ::getConfigForPackage
+        if (empty($rule_object->config)) {
+            return $this;
+        }
+        $new_config = clone $this->config;
+        $this->mergeConfigFromConfigObject($new_config, $rule_object->config);
+        return self::createFromViolinistConfig($new_config);
+    }
+
     public function getConfigForPackage(string $package_name) : self
     {
+        // @todo: Consider de-duplicating with the method above
+        // (::getConfigForRuleObject).
         $rules = $this->getRules();
         if (empty($rules)) {
             return $this;
