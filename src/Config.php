@@ -262,6 +262,7 @@ class Config
             'major',
             'minor',
             'patch',
+            'major-only',
         ];
         if (!in_array($this->config->composer_outdated_flag, $allowed_values)) {
             return 'minor';
