@@ -32,7 +32,7 @@ class RuleObjectConfigTest extends TestCase
         self::assertSame($config, $result);
     }
 
-    public function testRuleDoesNotOverrideExistingConfig()
+    public function testRuleDoesOverrideExistingConfig()
     {
         $config = Config::createFromViolinistConfig((object) [
             'update_dev_dependencies' => 0,
@@ -47,6 +47,36 @@ class RuleObjectConfigTest extends TestCase
 
         self::assertNotSame($config, $config_from_rule);
         self::assertFalse($config->shouldUpdateDevDependencies());
-        self::assertFalse($config_from_rule->shouldUpdateDevDependencies());
+        self::assertTrue($config_from_rule->shouldUpdateDevDependencies());
+    }
+
+    public function testRuleCanOverrideBackToDefault()
+    {
+        $config_data = (object) [
+            'security_updates_only' => 1,
+            'rules' => [
+                (object) [
+                    'name' => 'Always update these',
+                    'matchRules' => [
+                        (object) ['type' => 'names', 'values' => ['vendor/package-a', 'vendor/package-b']],
+                    ],
+                    'config' => (object) [
+                        'security_updates_only' => 0,
+                    ],
+                ],
+            ],
+        ];
+        $config = Config::createFromViolinistConfig($config_data);
+
+        self::assertTrue($config->shouldOnlyUpdateSecurityUpdates());
+
+        $config_for_package_a = $config->getConfigForPackage('vendor/package-a');
+        self::assertFalse($config_for_package_a->shouldOnlyUpdateSecurityUpdates());
+
+        $config_for_package_b = $config->getConfigForPackage('vendor/package-b');
+        self::assertFalse($config_for_package_b->shouldOnlyUpdateSecurityUpdates());
+
+        $config_for_other = $config->getConfigForPackage('vendor/package-c');
+        self::assertTrue($config_for_other->shouldOnlyUpdateSecurityUpdates());
     }
 }
