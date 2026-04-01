@@ -32,7 +32,7 @@ class RuleObjectConfigTest extends TestCase
         self::assertSame($config, $result);
     }
 
-    public function testRuleDoesOverrideExistingConfig()
+    public function testRuleDoesNotOverrideExistingConfig()
     {
         $config = Config::createFromViolinistConfig((object) [
             'update_dev_dependencies' => 0,
@@ -47,14 +47,26 @@ class RuleObjectConfigTest extends TestCase
 
         self::assertNotSame($config, $config_from_rule);
         self::assertFalse($config->shouldUpdateDevDependencies());
-        self::assertTrue($config_from_rule->shouldUpdateDevDependencies());
+        self::assertFalse($config_from_rule->shouldUpdateDevDependencies());
     }
 
-    public function testRuleCanOverrideBackToDefault()
+    public function testLaterRuleOverridesEarlierRuleForSamePackage()
     {
+        // A catch-all rule sets security_updates_only for all matched packages.
+        // A more specific rule after it can override back to the default for
+        // specific packages, since rules can override each other (but not the
+        // global config).
         $config_data = (object) [
-            'security_updates_only' => 1,
             'rules' => [
+                (object) [
+                    'name' => 'Security only for vendor packages',
+                    'matchRules' => [
+                        (object) ['type' => 'names', 'values' => ['vendor/*']],
+                    ],
+                    'config' => (object) [
+                        'security_updates_only' => 1,
+                    ],
+                ],
                 (object) [
                     'name' => 'Always update these',
                     'matchRules' => [
@@ -67,8 +79,6 @@ class RuleObjectConfigTest extends TestCase
             ],
         ];
         $config = Config::createFromViolinistConfig($config_data);
-
-        self::assertTrue($config->shouldOnlyUpdateSecurityUpdates());
 
         $config_for_package_a = $config->getConfigForPackage('vendor/package-a');
         self::assertFalse($config_for_package_a->shouldOnlyUpdateSecurityUpdates());

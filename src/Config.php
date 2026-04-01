@@ -550,7 +550,7 @@ class Config
             return $this;
         }
         $new_config = clone $this->config;
-        $this->mergeConfigFromConfigObject($new_config, $rule_object->config, true);
+        $this->mergeConfigFromConfigObject($new_config, $rule_object->config);
         return self::createFromViolinistConfig($new_config);
     }
 
@@ -563,6 +563,22 @@ class Config
             return $this;
         }
         $new_config = clone $this->config;
+        $default_config = $this->getDefaultConfig();
+        // Determine which keys are explicitly set in the global config (non-default).
+        // Rules cannot override these, but rules can override each other.
+        $globally_set_keys = [];
+        foreach ($default_config as $key => $default_value) {
+            if (!isset($new_config->{$key})) {
+                continue;
+            }
+            if ($key === 'bundled_packages') {
+                if ($new_config->{$key} != $default_value) {
+                    $globally_set_keys[$key] = true;
+                }
+            } elseif ($new_config->{$key} !== $default_value) {
+                $globally_set_keys[$key] = true;
+            }
+        }
         foreach ($this->config->rules as $rule) {
             if (empty($rule->config)) {
                 continue;
@@ -571,8 +587,14 @@ class Config
             if (!$matches) {
                 continue;
             }
-            // Then merge the config for this rule.
-            $this->mergeConfigFromConfigObject($new_config, $rule->config, true);
+            // Apply rule config. Rules cannot override the global config, but
+            // later rules can override earlier rules.
+            foreach ($rule->config as $key => $value) {
+                if (isset($globally_set_keys[$key])) {
+                    continue;
+                }
+                $new_config->{$key} = $value;
+            }
         }
         return self::createFromViolinistConfig($new_config);
     }
@@ -595,35 +617,33 @@ class Config
         }
     }
 
-    protected function mergeConfigFromConfigObject(\stdClass $config, \stdClass $other, bool $force = false) : array
+    protected function mergeConfigFromConfigObject(\stdClass $config, \stdClass $other) : array
     {
         $affected = [];
         $default_config = $this->getDefaultConfig();
         foreach ($other as $key => $value) {
-            if (!$force) {
-                // If the value corresponds to the default config, we don't need to
-                // set it.
-                if (isset($default_config->{$key}) && $default_config->{$key} === $value) {
-                    continue;
-                }
-                // This special case is because the default config is a stdclass,
-                // and that will not pass the strict equal test. So let's just
-                // loosen it up a bit for this specific case.
-                if ($key === 'bundled_packages' && $default_config->{$key} == $value) {
-                    continue;
-                }
-                // If our option is set, but not set to the default, let's not merge
-                // it.
-                if (isset($default_config->{$key}) && isset($config->{$key})) {
-                    // Special case for bundled packages again.
-                    if ($key === 'bundled_packages') {
-                        if ($config->{$key} != $default_config->{$key}) {
-                            continue;
-                        }
-                    } else {
-                        if ($config->{$key} !== $default_config->{$key}) {
-                            continue;
-                        }
+            // If the value corresponds to the default config, we don't need to
+            // set it.
+            if (isset($default_config->{$key}) && $default_config->{$key} === $value) {
+                continue;
+            }
+            // This special case is because the default config is a stdclass,
+            // and that will not pass the strict equal test. So let's just
+            // loosen it up a bit for this specific case.
+            if ($key === 'bundled_packages' && $default_config->{$key} == $value) {
+                continue;
+            }
+            // If our option is set, but not set to the default, let's not merge
+            // it.
+            if (isset($default_config->{$key}) && isset($config->{$key})) {
+                // Special case for bundled packages again.
+                if ($key === 'bundled_packages') {
+                    if ($config->{$key} != $default_config->{$key}) {
+                        continue;
+                    }
+                } else {
+                    if ($config->{$key} !== $default_config->{$key}) {
+                        continue;
                     }
                 }
             }
