@@ -563,6 +563,19 @@ class Config
             return $this;
         }
         $new_config = clone $this->config;
+        $default_config = $this->getDefaultConfig();
+        // Determine which keys are explicitly set in the global config (non-default).
+        // Rules cannot override these, but rules can override each other.
+        $globally_set_keys = [];
+        foreach ($default_config as $key => $default_value) {
+            if ($key === 'bundled_packages') {
+                if ($new_config->{$key} != $default_value) {
+                    $globally_set_keys[$key] = true;
+                }
+            } elseif ($new_config->{$key} !== $default_value) {
+                $globally_set_keys[$key] = true;
+            }
+        }
         foreach ($this->config->rules as $rule) {
             if (empty($rule->config)) {
                 continue;
@@ -571,8 +584,14 @@ class Config
             if (!$matches) {
                 continue;
             }
-            // Then merge the config for this rule.
-            $this->mergeConfigFromConfigObject($new_config, $rule->config);
+            // Apply rule config. Rules cannot override the global config, but
+            // later rules can override earlier rules.
+            foreach ($rule->config as $key => $value) {
+                if (isset($globally_set_keys[$key])) {
+                    continue;
+                }
+                $new_config->{$key} = $value;
+            }
         }
         return self::createFromViolinistConfig($new_config);
     }
