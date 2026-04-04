@@ -568,9 +568,6 @@ class Config
         // Rules cannot override these, but rules can override each other.
         $globally_set_keys = [];
         foreach ($default_config as $key => $default_value) {
-            if (!isset($new_config->{$key})) {
-                continue;
-            }
             if ($key === 'bundled_packages') {
                 if ($new_config->{$key} != $default_value) {
                     $globally_set_keys[$key] = true;

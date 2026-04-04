@@ -89,4 +89,64 @@ class RuleObjectConfigTest extends TestCase
         $config_for_other = $config->getConfigForPackage('vendor/package-c');
         self::assertTrue($config_for_other->shouldOnlyUpdateSecurityUpdates());
     }
+
+    public function testRuleDoesNotOverrideGlobalConfigForPackage()
+    {
+        $config_data = (object) [
+            'security_updates_only' => 1,
+            'rules' => [
+                (object) [
+                    'name' => 'Try to override security_updates_only',
+                    'matchRules' => [
+                        (object) ['type' => 'names', 'values' => ['vendor/*']],
+                    ],
+                    'config' => (object) [
+                        'security_updates_only' => 0,
+                    ],
+                ],
+            ],
+        ];
+        $config = Config::createFromViolinistConfig($config_data);
+
+        $config_for_package = $config->getConfigForPackage('vendor/package-a');
+        self::assertTrue($config_for_package->shouldOnlyUpdateSecurityUpdates());
+    }
+
+    public function testRuleDoesNotOverrideGlobalBundledPackages()
+    {
+        $config_data = (object) [
+            'bundled_packages' => (object) ['psr/log' => ['symfony/console']],
+            'rules' => [
+                (object) [
+                    'name' => 'Try to override bundled_packages',
+                    'matchRules' => [
+                        (object) ['type' => 'names', 'values' => ['psr/*']],
+                    ],
+                    'config' => (object) [
+                        'bundled_packages' => (object) ['psr/log' => ['other/package']],
+                    ],
+                ],
+            ],
+        ];
+        $config = Config::createFromViolinistConfig($config_data);
+
+        $config_for_package = $config->getConfigForPackage('psr/log');
+        self::assertEquals(['symfony/console'], $config_for_package->getBundledPackagesForPackage('psr/log'));
+    }
+
+    public function testRuleObjectDoesNotOverrideGlobalBundledPackages()
+    {
+        $config_data = (object) [
+            'bundled_packages' => (object) ['psr/log' => ['symfony/console']],
+        ];
+        $config = Config::createFromViolinistConfig($config_data);
+        $rule = (object) [
+            'config' => (object) [
+                'bundled_packages' => (object) ['psr/log' => ['other/package']],
+            ],
+        ];
+
+        $config_from_rule = $config->getConfigForRuleObject($rule);
+        self::assertEquals(['symfony/console'], $config_from_rule->getBundledPackagesForPackage('psr/log'));
+    }
 }
