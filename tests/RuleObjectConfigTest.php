@@ -175,6 +175,8 @@ class RuleObjectConfigTest extends TestCase
 
         $config_for_package = $config->getConfigForPackage('psr/log');
         self::assertFalse($config_for_package->shouldOnlyUpdateSecurityUpdates());
+        self::assertTrue($config->shouldOnlyUpdateSecurityUpdates());
+        self::assertTrue($config->getConfigForPackage('not/exist')->shouldOnlyUpdateSecurityUpdates());
     }
 
     public function testGetConfigForPackageDoesNotMarkUnsetOptionsAsSet()
@@ -211,19 +213,31 @@ class RuleObjectConfigTest extends TestCase
         self::assertEquals('squash', $config_for_package->getAutomergeMethod(true));
     }
 
-    public function testRuleObjectDoesNotOverrideGlobalBundledPackages()
+    public function testGetConfigForRuleObjectAndForPackageProduceSameBundledPackages()
     {
         $config_data = (object) [
             'bundled_packages' => (object) ['psr/log' => ['symfony/console']],
-        ];
-        $config = Config::createFromViolinistConfig($config_data);
-        $rule = (object) [
-            'config' => (object) [
-                'bundled_packages' => (object) ['psr/log' => ['other/package']],
+            'rules' => [
+                (object) [
+                    'name' => 'Override bundled_packages',
+                    'matchRules' => [
+                        (object) ['type' => 'names', 'values' => ['psr/*']],
+                    ],
+                    'config' => (object) [
+                        'bundled_packages' => (object) ['psr/log' => ['other/package']],
+                    ],
+                ],
             ],
         ];
+        $config = Config::createFromViolinistConfig($config_data);
+        $rule = $config_data->rules[0];
 
+        $config_for_package = $config->getConfigForPackage('psr/log');
         $config_from_rule = $config->getConfigForRuleObject($rule);
-        self::assertEquals(['symfony/console'], $config_from_rule->getBundledPackagesForPackage('psr/log'));
+
+        self::assertEquals(
+            $config_for_package->getBundledPackagesForPackage('psr/log'),
+            $config_from_rule->getBundledPackagesForPackage('psr/log')
+        );
     }
 }

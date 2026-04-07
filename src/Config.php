@@ -550,6 +550,13 @@ class Config
         $clone = clone $this;
         $clone->config = clone $this->config;
         $affected = $this->mergeConfigFromConfigObject($clone->config, $rule_object->config);
+        // bundled_packages is protected from override in mergeConfigFromConfigObject
+        // (which is correct for config inheritance), but rules should always be able
+        // to override it, consistent with getConfigForPackage().
+        if (isset($rule_object->config->bundled_packages)) {
+            $clone->config->bundled_packages = $rule_object->config->bundled_packages;
+            $affected['bundled_packages'] = $rule_object->config->bundled_packages;
+        }
         foreach ($affected as $key => $value) {
             $clone->configOptionsSet[$key] = true;
         }
