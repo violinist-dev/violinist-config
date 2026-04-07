@@ -32,7 +32,7 @@ class RuleObjectConfigTest extends TestCase
         self::assertSame($config, $result);
     }
 
-    public function testRuleDoesNotOverrideExistingConfig()
+    public function testRuleOverridesExistingConfig()
     {
         $config = Config::createFromViolinistConfig((object) [
             'update_dev_dependencies' => 0,
@@ -47,7 +47,7 @@ class RuleObjectConfigTest extends TestCase
 
         self::assertNotSame($config, $config_from_rule);
         self::assertFalse($config->shouldUpdateDevDependencies());
-        self::assertFalse($config_from_rule->shouldUpdateDevDependencies());
+        self::assertTrue($config_from_rule->shouldUpdateDevDependencies());
     }
 
     public function testLaterRuleOverridesEarlierRuleForSamePackage()

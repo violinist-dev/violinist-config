@@ -549,15 +549,8 @@ class Config
         }
         $clone = clone $this;
         $clone->config = clone $this->config;
-        $affected = $this->mergeConfigFromConfigObject($clone->config, $rule_object->config);
-        // bundled_packages is protected from override in mergeConfigFromConfigObject
-        // (which is correct for config inheritance), but rules should always be able
-        // to override it, consistent with getConfigForPackage().
-        if (isset($rule_object->config->bundled_packages)) {
-            $clone->config->bundled_packages = $rule_object->config->bundled_packages;
-            $affected['bundled_packages'] = $rule_object->config->bundled_packages;
-        }
-        foreach ($affected as $key => $value) {
+        foreach ($rule_object->config as $key => $value) {
+            $clone->config->{$key} = $value;
             $clone->configOptionsSet[$key] = true;
         }
         return $clone;
@@ -569,31 +562,14 @@ class Config
         if (empty($rules)) {
             return $this;
         }
-        $new_config = clone $this->config;
-        $applied_keys = [];
+        $result = $this;
         foreach ($rules as $rule) {
-            if (empty($rule->config)) {
-                continue;
-            }
             if (!$this->getMatcherFactory()->hasMatches($rule, $package_name)) {
                 continue;
             }
-            // Apply rule config. Later rules override earlier rules and global
-            // config (last-wins, same as Renovate's packageRules).
-            foreach ($rule->config as $key => $value) {
-                $new_config->{$key} = $value;
-                $applied_keys[$key] = true;
-            }
+            $result = $result->getConfigForRuleObject($rule);
         }
-        if (empty($applied_keys)) {
-            return $this;
-        }
-        $clone = clone $this;
-        $clone->config = $new_config;
-        foreach ($applied_keys as $key => $_) {
-            $clone->configOptionsSet[$key] = true;
-        }
-        return $clone;
+        return $result;
     }
 
     public function getRules() : array
