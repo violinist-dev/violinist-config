@@ -230,14 +230,24 @@ class Config
 
     public function setConfig($config)
     {
+        if (!$config instanceof \stdClass) {
+            return;
+        }
+        $config = $this->normalizeConfigKeys($config);
         foreach ($this->getDefaultConfig() as $key => $value) {
             if (isset($config->{$key})) {
                 $this->config->{$key} = $config->{$key};
                 $this->configOptionsSet[$key] = true;
             }
         }
-        // Also make sure to set the block list config from the deprecated part.
-        // Plus alternative spelling from allow list.
+        if (!empty($config->rules)) {
+            $this->config->rules = $config->rules;
+        }
+    }
+
+    private function normalizeConfigKeys(\stdClass $config) : \stdClass
+    {
+        $config = clone $config;
         $renamed_and_aliased = [
             'blacklist' => 'blocklist',
             'block_list' => 'blocklist',
@@ -245,12 +255,11 @@ class Config
         ];
         foreach ($renamed_and_aliased as $not_real => $real) {
             if (isset($config->{$not_real})) {
-                $this->config->{$real} = $config->{$not_real};
+                $config->{$real} = $config->{$not_real};
+                unset($config->{$not_real});
             }
         }
-        if (!empty($config->rules)) {
-            $this->config->rules = $config->rules;
-        }
+        return $config;
     }
 
     public function getComposerOutdatedFlag() : string
@@ -544,37 +553,44 @@ class Config
 
     public function getConfigForRuleObject(\stdClass $rule_object)
     {
-        // @todo: This is a bit duplication from below actually. Specifically
-        // the method ::getConfigForPackage
         if (empty($rule_object->config)) {
             return $this;
         }
-        $new_config = clone $this->config;
-        $this->mergeConfigFromConfigObject($new_config, $rule_object->config);
-        return self::createFromViolinistConfig($new_config);
+        $clone = clone $this;
+        $clone->config = clone $this->config;
+        $clone->extendsStorage = clone $this->extendsStorage;
+        $normalized = $this->normalizeConfigKeys($rule_object->config);
+        foreach ($this->getDefaultConfig() as $key => $value) {
+            if (!isset($normalized->{$key})) {
+                continue;
+            }
+            $clone->config->{$key} = $normalized->{$key};
+            $clone->configOptionsSet[$key] = true;
+            $clone->extendsStorage->removeItemsForKey($key);
+        }
+        return $clone;
     }
 
     public function getConfigForPackage(string $package_name) : self
     {
-        // @todo: Consider de-duplicating with the method above
-        // (::getConfigForRuleObject).
         $rules = $this->getRules();
         if (empty($rules)) {
             return $this;
         }
-        $new_config = clone $this->config;
-        foreach ($this->config->rules as $rule) {
-            if (empty($rule->config)) {
+        $result = $this;
+        foreach ($rules as $rule) {
+            if (!$this->getMatcherFactory()->hasMatches($rule, $package_name)) {
                 continue;
             }
-            $matches = $this->getMatcherFactory()->hasMatches($rule, $package_name);
-            if (!$matches) {
-                continue;
-            }
-            // Then merge the config for this rule.
-            $this->mergeConfigFromConfigObject($new_config, $rule->config);
+            $result = $result->getConfigForRuleObject($rule);
         }
-        return self::createFromViolinistConfig($new_config);
+        if ($result === $this) {
+            $clone = clone $this;
+            $clone->config = clone $this->config;
+            $clone->extendsStorage = clone $this->extendsStorage;
+            return $clone;
+        }
+        return $result;
     }
 
     public function getRules() : array
@@ -589,8 +605,12 @@ class Config
     {
         $keys_and_values_affected = $this->mergeConfigFromConfigObject($this->getConfig(), $other->getConfig());
         $this->extendsStorage->addExtendItems($other->getExtendsStorage()->getExtendItems());
+        foreach ($this->getDefaultConfig() as $key => $value) {
+            if ($other->hasConfigForKey($key)) {
+                $this->configOptionsSet[$key] = true;
+            }
+        }
         foreach ($keys_and_values_affected as $key => $value) {
-            $this->configOptionsSet[$key] = true;
             $this->extendsStorage->addExtendItem(new ExtendsChainItem($extends_name, $key, $value));
         }
     }

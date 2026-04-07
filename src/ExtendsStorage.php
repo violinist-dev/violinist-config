@@ -24,4 +24,11 @@ class ExtendsStorage
     {
         $this->items[$item->getName()][$item->getKey()] = $item;
     }
+
+    public function removeItemsForKey(string $key)
+    {
+        foreach ($this->items as $extend_name => $items) {
+            unset($this->items[$extend_name][$key]);
+        }
+    }
 }
