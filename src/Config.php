@@ -558,9 +558,15 @@ class Config
         }
         $clone = clone $this;
         $clone->config = clone $this->config;
-        foreach ($this->normalizeConfigKeys($rule_object->config) as $key => $value) {
-            $clone->config->{$key} = $value;
+        $clone->extendsStorage = clone $this->extendsStorage;
+        $normalized = $this->normalizeConfigKeys($rule_object->config);
+        foreach ($this->getDefaultConfig() as $key => $value) {
+            if (!isset($normalized->{$key})) {
+                continue;
+            }
+            $clone->config->{$key} = $normalized->{$key};
             $clone->configOptionsSet[$key] = true;
+            $clone->extendsStorage->removeItemsForKey($key);
         }
         return $clone;
     }
@@ -577,6 +583,12 @@ class Config
                 continue;
             }
             $result = $result->getConfigForRuleObject($rule);
+        }
+        if ($result === $this) {
+            $clone = clone $this;
+            $clone->config = clone $this->config;
+            $clone->extendsStorage = clone $this->extendsStorage;
+            return $clone;
         }
         return $result;
     }

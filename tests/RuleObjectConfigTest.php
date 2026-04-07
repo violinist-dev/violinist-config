@@ -255,4 +255,62 @@ class RuleObjectConfigTest extends TestCase
             $config_from_rule->getBundledPackagesForPackage('psr/log')
         );
     }
+
+    public function testRuleConfigWithUnknownKeyIsIgnored()
+    {
+        $config = new Config();
+        $rule = (object) [
+            'config' => (object) [
+                'this_key_does_not_exist' => 'some_value',
+                'security_updates_only' => 1,
+            ],
+        ];
+        $config_from_rule = $config->getConfigForRuleObject($rule);
+        self::assertFalse($config_from_rule->hasConfigForKey('this_key_does_not_exist'));
+        // Known keys are still applied.
+        self::assertTrue($config_from_rule->shouldOnlyUpdateSecurityUpdates());
+    }
+
+    public function testRuleConfigWithNestedRulesIsNotPropagated()
+    {
+        $config = new Config();
+        $rule = (object) [
+            'config' => (object) [
+                'security_updates_only' => 1,
+                'rules' => [
+                    (object) [
+                        'config' => (object) ['automerge' => 1],
+                    ],
+                ],
+            ],
+        ];
+        $config_from_rule = $config->getConfigForRuleObject($rule);
+        // Nested rules must not leak into the package-specific config.
+        self::assertEmpty($config_from_rule->getRules());
+        // Other keys in the rule config are still applied.
+        self::assertTrue($config_from_rule->shouldOnlyUpdateSecurityUpdates());
+    }
+
+    public function testGetConfigForPackageReturnsIndependentConfigWhenNoRuleMatches()
+    {
+        $config = Config::createFromViolinistConfig((object) [
+            'security_updates_only' => 0,
+            'rules' => [
+                (object) [
+                    'matchRules' => [
+                        (object) ['type' => 'names', 'values' => ['vendor/specific-package']],
+                    ],
+                    'config' => (object) ['security_updates_only' => 1],
+                ],
+            ],
+        ]);
+
+        $config_for_unmatched = $config->getConfigForPackage('vendor/other-package');
+
+        // Must be an independent object, not the global config instance.
+        self::assertNotSame($config, $config_for_unmatched);
+        // Mutating the returned config must not affect the global config.
+        $config_for_unmatched->setConfig((object) ['security_updates_only' => 1]);
+        self::assertFalse($config->shouldOnlyUpdateSecurityUpdates());
+    }
 }
