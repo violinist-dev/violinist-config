@@ -7,6 +7,21 @@ use Violinist\Config\Config;
 
 class RuleObjectConfigTest extends TestCase
 {
+    public function testRuleWithDeprecatedAliasKeyIsNormalized()
+    {
+        $config = new Config();
+        $rule = (object) [
+            'config' => (object) [
+                'blacklist' => ['vendor/package-a'],
+            ],
+        ];
+
+        $config_from_rule = $config->getConfigForRuleObject($rule);
+
+        self::assertEquals(['vendor/package-a'], $config_from_rule->getBlockList());
+        self::assertTrue($config_from_rule->hasConfigForKey('blocklist'));
+    }
+
     public function testGetConfigForRuleObjectReturnsRuleConfig()
     {
         $config_data = json_decode(file_get_contents(__DIR__ . '/fixtures/violinist-test-drupal-config.json'));

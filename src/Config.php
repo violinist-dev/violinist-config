@@ -230,14 +230,24 @@ class Config
 
     public function setConfig($config)
     {
+        if (!$config instanceof \stdClass) {
+            return;
+        }
+        $config = $this->normalizeConfigKeys($config);
         foreach ($this->getDefaultConfig() as $key => $value) {
             if (isset($config->{$key})) {
                 $this->config->{$key} = $config->{$key};
                 $this->configOptionsSet[$key] = true;
             }
         }
-        // Also make sure to set the block list config from the deprecated part.
-        // Plus alternative spelling from allow list.
+        if (!empty($config->rules)) {
+            $this->config->rules = $config->rules;
+        }
+    }
+
+    private function normalizeConfigKeys(\stdClass $config) : \stdClass
+    {
+        $config = clone $config;
         $renamed_and_aliased = [
             'blacklist' => 'blocklist',
             'block_list' => 'blocklist',
@@ -245,12 +255,11 @@ class Config
         ];
         foreach ($renamed_and_aliased as $not_real => $real) {
             if (isset($config->{$not_real})) {
-                $this->config->{$real} = $config->{$not_real};
+                $config->{$real} = $config->{$not_real};
+                unset($config->{$not_real});
             }
         }
-        if (!empty($config->rules)) {
-            $this->config->rules = $config->rules;
-        }
+        return $config;
     }
 
     public function getComposerOutdatedFlag() : string
@@ -549,7 +558,7 @@ class Config
         }
         $clone = clone $this;
         $clone->config = clone $this->config;
-        foreach ($rule_object->config as $key => $value) {
+        foreach ($this->normalizeConfigKeys($rule_object->config) as $key => $value) {
             $clone->config->{$key} = $value;
             $clone->configOptionsSet[$key] = true;
         }
