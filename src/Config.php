@@ -544,56 +544,49 @@ class Config
 
     public function getConfigForRuleObject(\stdClass $rule_object)
     {
-        // @todo: This is a bit duplication from below actually. Specifically
-        // the method ::getConfigForPackage
         if (empty($rule_object->config)) {
             return $this;
         }
-        $new_config = clone $this->config;
-        $this->mergeConfigFromConfigObject($new_config, $rule_object->config);
-        return self::createFromViolinistConfig($new_config);
+        $clone = clone $this;
+        $clone->config = clone $this->config;
+        $affected = $this->mergeConfigFromConfigObject($clone->config, $rule_object->config);
+        foreach ($affected as $key => $value) {
+            $clone->configOptionsSet[$key] = true;
+        }
+        return $clone;
     }
 
     public function getConfigForPackage(string $package_name) : self
     {
-        // @todo: Consider de-duplicating with the method above
-        // (::getConfigForRuleObject).
         $rules = $this->getRules();
         if (empty($rules)) {
             return $this;
         }
         $new_config = clone $this->config;
-        $default_config = $this->getDefaultConfig();
-        // Determine which keys are explicitly set in the global config (non-default).
-        // Rules cannot override these, but rules can override each other.
-        $globally_set_keys = [];
-        foreach ($default_config as $key => $default_value) {
-            if ($key === 'bundled_packages') {
-                if ($new_config->{$key} != $default_value) {
-                    $globally_set_keys[$key] = true;
-                }
-            } elseif ($new_config->{$key} !== $default_value) {
-                $globally_set_keys[$key] = true;
-            }
-        }
-        foreach ($this->config->rules as $rule) {
+        $applied_keys = [];
+        foreach ($rules as $rule) {
             if (empty($rule->config)) {
                 continue;
             }
-            $matches = $this->getMatcherFactory()->hasMatches($rule, $package_name);
-            if (!$matches) {
+            if (!$this->getMatcherFactory()->hasMatches($rule, $package_name)) {
                 continue;
             }
-            // Apply rule config. Rules cannot override the global config, but
-            // later rules can override earlier rules.
+            // Apply rule config. Later rules override earlier rules and global
+            // config (last-wins, same as Renovate's packageRules).
             foreach ($rule->config as $key => $value) {
-                if (isset($globally_set_keys[$key])) {
-                    continue;
-                }
                 $new_config->{$key} = $value;
+                $applied_keys[$key] = true;
             }
         }
-        return self::createFromViolinistConfig($new_config);
+        if (empty($applied_keys)) {
+            return $this;
+        }
+        $clone = clone $this;
+        $clone->config = $new_config;
+        foreach ($applied_keys as $key => $_) {
+            $clone->configOptionsSet[$key] = true;
+        }
+        return $clone;
     }
 
     public function getRules() : array
@@ -608,8 +601,12 @@ class Config
     {
         $keys_and_values_affected = $this->mergeConfigFromConfigObject($this->getConfig(), $other->getConfig());
         $this->extendsStorage->addExtendItems($other->getExtendsStorage()->getExtendItems());
+        foreach ($this->getDefaultConfig() as $key => $value) {
+            if ($other->hasConfigForKey($key)) {
+                $this->configOptionsSet[$key] = true;
+            }
+        }
         foreach ($keys_and_values_affected as $key => $value) {
-            $this->configOptionsSet[$key] = true;
             $this->extendsStorage->addExtendItem(new ExtendsChainItem($extends_name, $key, $value));
         }
     }

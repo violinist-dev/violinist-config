@@ -54,8 +54,7 @@ class RuleObjectConfigTest extends TestCase
     {
         // A catch-all rule sets security_updates_only for all matched packages.
         // A more specific rule after it can override back to the default for
-        // specific packages, since rules can override each other (but not the
-        // global config).
+        // specific packages, since rules can override each other.
         $config_data = (object) [
             'rules' => [
                 (object) [
@@ -90,13 +89,13 @@ class RuleObjectConfigTest extends TestCase
         self::assertTrue($config_for_other->shouldOnlyUpdateSecurityUpdates());
     }
 
-    public function testRuleDoesNotOverrideGlobalConfigForPackage()
+    public function testRuleOverridesGlobalConfigForPackage()
     {
         $config_data = (object) [
             'security_updates_only' => 1,
             'rules' => [
                 (object) [
-                    'name' => 'Try to override security_updates_only',
+                    'name' => 'Override security_updates_only',
                     'matchRules' => [
                         (object) ['type' => 'names', 'values' => ['vendor/*']],
                     ],
@@ -109,16 +108,38 @@ class RuleObjectConfigTest extends TestCase
         $config = Config::createFromViolinistConfig($config_data);
 
         $config_for_package = $config->getConfigForPackage('vendor/package-a');
-        self::assertTrue($config_for_package->shouldOnlyUpdateSecurityUpdates());
+        self::assertFalse($config_for_package->shouldOnlyUpdateSecurityUpdates());
     }
 
-    public function testRuleDoesNotOverrideGlobalBundledPackages()
+    public function testRuleOverridesExplicitGlobalValueForPackage()
+    {
+        $config_data = (object) [
+            'update_dev_dependencies' => 1,
+            'rules' => [
+                (object) [
+                    'name' => 'Override update_dev_dependencies',
+                    'matchRules' => [
+                        (object) ['type' => 'names', 'values' => ['vendor/*']],
+                    ],
+                    'config' => (object) [
+                        'update_dev_dependencies' => 0,
+                    ],
+                ],
+            ],
+        ];
+        $config = Config::createFromViolinistConfig($config_data);
+
+        $config_for_package = $config->getConfigForPackage('vendor/package-a');
+        self::assertFalse($config_for_package->shouldUpdateDevDependencies());
+    }
+
+    public function testRuleOverridesGlobalBundledPackages()
     {
         $config_data = (object) [
             'bundled_packages' => (object) ['psr/log' => ['symfony/console']],
             'rules' => [
                 (object) [
-                    'name' => 'Try to override bundled_packages',
+                    'name' => 'Override bundled_packages',
                     'matchRules' => [
                         (object) ['type' => 'names', 'values' => ['psr/*']],
                     ],
@@ -131,7 +152,63 @@ class RuleObjectConfigTest extends TestCase
         $config = Config::createFromViolinistConfig($config_data);
 
         $config_for_package = $config->getConfigForPackage('psr/log');
-        self::assertEquals(['symfony/console'], $config_for_package->getBundledPackagesForPackage('psr/log'));
+        self::assertEquals(['other/package'], $config_for_package->getBundledPackagesForPackage('psr/log'));
+    }
+
+    public function testRuleOverridesGlobalSecurityUpdatesOnlyForSpecificPackage()
+    {
+        $config_data = (object) [
+            'security_updates_only' => 1,
+            'rules' => [
+                (object) [
+                    'name' => 'PSR Log',
+                    'matchRules' => [
+                        (object) ['type' => 'names', 'values' => ['psr/log']],
+                    ],
+                    'config' => (object) [
+                        'security_updates_only' => 0,
+                    ],
+                ],
+            ],
+        ];
+        $config = Config::createFromViolinistConfig($config_data);
+
+        $config_for_package = $config->getConfigForPackage('psr/log');
+        self::assertFalse($config_for_package->shouldOnlyUpdateSecurityUpdates());
+    }
+
+    public function testGetConfigForPackageDoesNotMarkUnsetOptionsAsSet()
+    {
+        // automerge_method is explicitly set to 'squash'; automerge_method_security
+        // is intentionally left unset so it should fall back to automerge_method.
+        $config_data = (object) [
+            'automerge_method' => 'squash',
+            'rules' => [
+                (object) [
+                    'name' => 'Enable automerge for vendor packages',
+                    'matchRules' => [
+                        (object) ['type' => 'names', 'values' => ['vendor/*']],
+                    ],
+                    'config' => (object) [
+                        'automerge' => 1,
+                    ],
+                ],
+            ],
+        ];
+        $config = Config::createFromViolinistConfig($config_data);
+
+        // Sanity: on the global config, automerge_method_security is unset, so
+        // getAutomergeMethod(true) must fall back to automerge_method ('squash').
+        self::assertFalse($config->hasConfigForKey('automerge_method_security'));
+        self::assertEquals('squash', $config->getAutomergeMethod(true));
+
+        $config_for_package = $config->getConfigForPackage('vendor/package-a');
+
+        // After getConfigForPackage(), automerge_method_security was still never
+        // explicitly configured, so hasConfigForKey() must still return false and
+        // getAutomergeMethod(true) must still fall back to 'squash'.
+        self::assertFalse($config_for_package->hasConfigForKey('automerge_method_security'));
+        self::assertEquals('squash', $config_for_package->getAutomergeMethod(true));
     }
 
     public function testRuleObjectDoesNotOverrideGlobalBundledPackages()
