@@ -120,6 +120,7 @@ class Config
             'automerge_method_security' => 'merge',
             'labels' => [],
             'labels_security' => [],
+            'changelog_package_aliases' => (object) [],
         ];
     }
 
@@ -434,6 +435,31 @@ class Config
         return [];
     }
 
+    /**
+     * Get the package name that should be used when looking up a changelog
+     * or changed files for a given package.
+     *
+     * This is useful for metapackages (like drupal/core-recommended) that do
+     * not have a changelog of their own, but should use the changelog of
+     * another package (like drupal/core) instead.
+     */
+    public function getChangelogAliasForPackage(string $package_name) : string
+    {
+        if (!is_object($this->config->changelog_package_aliases)) {
+            return $package_name;
+        }
+        foreach ($this->config->changelog_package_aliases as $package => $alias) {
+            if ($package !== $package_name) {
+                continue;
+            }
+            if (!is_string($alias) || empty($alias)) {
+                return $package_name;
+            }
+            return $alias;
+        }
+        return $package_name;
+    }
+
     public function getAssignees()
     {
         if (!is_array($this->config->assignees)) {
@@ -628,14 +654,15 @@ class Config
             // This special case is because the default config is a stdclass,
             // and that will not pass the strict equal test. So let's just
             // loosen it up a bit for this specific case.
-            if ($key === 'bundled_packages' && $default_config->{$key} == $value) {
+            if (in_array($key, ['bundled_packages', 'changelog_package_aliases'], true) && $default_config->{$key} == $value) {
                 continue;
             }
             // If our option is set, but not set to the default, let's not merge
             // it.
             if (isset($default_config->{$key}) && isset($config->{$key})) {
-                // Special case for bundled packages again.
-                if ($key === 'bundled_packages') {
+                // Special case for bundled packages (and similar object-based
+                // options) again.
+                if (in_array($key, ['bundled_packages', 'changelog_package_aliases'], true)) {
                     if ($config->{$key} != $default_config->{$key}) {
                         continue;
                     }
