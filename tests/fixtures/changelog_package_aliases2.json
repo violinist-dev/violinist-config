@@ -1,0 +1,9 @@
+{
+  "extra": {
+    "violinist": {
+      "changelog_package_aliases": {
+        "drupal/core-recommended": "drupal/core"
+      }
+    }
+  }
+}

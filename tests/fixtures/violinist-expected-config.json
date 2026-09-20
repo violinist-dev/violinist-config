@@ -34,5 +34,6 @@
     "security"
   ],
   "number_of_concurrent_updates": 5,
-  "allow_security_updates_on_concurrent_limit": true
+  "allow_security_updates_on_concurrent_limit": true,
+  "changelog_package_aliases": {}
 }

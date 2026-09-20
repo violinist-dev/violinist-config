@@ -128,6 +128,17 @@ class UnitTest extends TestCase
     }
 
     /**
+     * Test the changelog package aliases config option.
+     *
+     * @dataProvider getChangelogPackageAliases
+     */
+    public function testChangelogPackageAliases($filename, $package_name, $expected_result)
+    {
+        $data = $this->createDataFromFixture($filename);
+        self::assertEquals($expected_result, $data->getChangelogAliasForPackage($package_name));
+    }
+
+    /**
      * Test the blacklist config option.
      *
      * @dataProvider getBlackList
@@ -1132,6 +1143,37 @@ class UnitTest extends TestCase
                 'bundled_packages6.json',
                 [],
                 true,
+            ],
+        ];
+    }
+
+    public static function getChangelogPackageAliases()
+    {
+        return [
+            [
+                'changelog_package_aliases.json',
+                'drupal/core-recommended',
+                'drupal/core-recommended',
+            ],
+            [
+                'changelog_package_aliases2.json',
+                'drupal/core-recommended',
+                'drupal/core',
+            ],
+            [
+                'changelog_package_aliases2.json',
+                'some/other-package',
+                'some/other-package',
+            ],
+            [
+                'changelog_package_aliases3.json',
+                'drupal/core-recommended',
+                'drupal/core-recommended',
+            ],
+            [
+                'changelog_package_aliases4.json',
+                'drupal/core-recommended',
+                'drupal/core-recommended',
             ],
         ];
     }
