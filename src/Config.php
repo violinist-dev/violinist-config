@@ -654,7 +654,8 @@ class Config
             // This special case is because the default config is a stdclass,
             // and that will not pass the strict equal test. So let's just
             // loosen it up a bit for this specific case.
-            if (in_array($key, ['bundled_packages', 'changelog_package_aliases'], true) && $default_config->{$key} == $value) {
+            $object_based_options = ['bundled_packages', 'changelog_package_aliases'];
+            if (in_array($key, $object_based_options, true) && $default_config->{$key} == $value) {
                 continue;
             }
             // If our option is set, but not set to the default, let's not merge
@@ -662,7 +663,7 @@ class Config
             if (isset($default_config->{$key}) && isset($config->{$key})) {
                 // Special case for bundled packages (and similar object-based
                 // options) again.
-                if (in_array($key, ['bundled_packages', 'changelog_package_aliases'], true)) {
+                if (in_array($key, $object_based_options, true)) {
                     if ($config->{$key} != $default_config->{$key}) {
                         continue;
                     }
