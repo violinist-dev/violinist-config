@@ -111,6 +111,8 @@ class Config
             'security_updates_only' => 0,
             'number_of_concurrent_updates' => 0,
             'allow_security_updates_on_concurrent_limit' => 0,
+            'maximum_update_request_age' => '',
+            'expired_update_request_cooldown' => '',
             'branch_prefix' => '',
             'commit_message_convention' => '',
             'allow_update_indirect_with_direct' => 0,
@@ -516,6 +518,41 @@ class Config
     public function getNumberOfAllowedPrs()
     {
         return (int) $this->config->number_of_concurrent_updates;
+    }
+
+    public function getMaximumUpdateRequestAge() : string
+    {
+        return $this->getDurationConfigValue('maximum_update_request_age');
+    }
+
+    public function getExpiredUpdateRequestCooldown() : string
+    {
+        $configured_cooldown = $this->getDurationConfigValue('expired_update_request_cooldown');
+        if ($configured_cooldown !== '') {
+            return $configured_cooldown;
+        }
+
+        $maximum_age = $this->getMaximumUpdateRequestAge();
+        if ($maximum_age === '') {
+            return '';
+        }
+
+        preg_match('/^([1-9][0-9]*)([dwm])$/', $maximum_age, $matches);
+        return ((int) $matches[1] * 2) . $matches[2];
+    }
+
+    private function getDurationConfigValue(string $key) : string
+    {
+        if (!isset($this->config->{$key}) || !is_string($this->config->{$key})) {
+            return '';
+        }
+
+        $value = trim($this->config->{$key});
+        if (!preg_match('/^[1-9][0-9]*[dwm]$/', $value)) {
+            return '';
+        }
+
+        return $value;
     }
 
     public function shouldAllowSecurityUpdatesOnConcurrentLimit()
