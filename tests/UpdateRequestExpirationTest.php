@@ -93,4 +93,25 @@ class UpdateRequestExpirationTest extends TestCase
         self::assertSame('', $config->getMaximumUpdateRequestAge());
         self::assertSame('', $config->getExpiredUpdateRequestCooldown());
     }
+
+    public function testNonStringDurationsAreIgnored() : void
+    {
+        $config = Config::createFromViolinistConfig((object) [
+            'maximum_update_request_age' => 8,
+            'expired_update_request_cooldown' => false,
+        ]);
+
+        self::assertSame('', $config->getMaximumUpdateRequestAge());
+        self::assertSame('', $config->getExpiredUpdateRequestCooldown());
+    }
+
+    public function testNonStringCooldownFallsBackToDerivedValue() : void
+    {
+        $config = Config::createFromViolinistConfig((object) [
+            'maximum_update_request_age' => '8w',
+            'expired_update_request_cooldown' => 16,
+        ]);
+
+        self::assertSame('16w', $config->getExpiredUpdateRequestCooldown());
+    }
 }
