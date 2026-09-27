@@ -111,6 +111,7 @@ class Config
             'security_updates_only' => 0,
             'number_of_concurrent_updates' => 0,
             'allow_security_updates_on_concurrent_limit' => 0,
+            'concurrent_updates_bypass_packages' => [],
             'branch_prefix' => '',
             'commit_message_convention' => '',
             'allow_update_indirect_with_direct' => 0,
@@ -521,6 +522,44 @@ class Config
     public function shouldAllowSecurityUpdatesOnConcurrentLimit()
     {
         return (bool) $this->config->allow_security_updates_on_concurrent_limit;
+    }
+
+    public function getConcurrentUpdatesBypassPackages() : array
+    {
+        if (!is_array($this->config->concurrent_updates_bypass_packages)) {
+            return [];
+        }
+
+        return array_values(array_filter(
+            $this->config->concurrent_updates_bypass_packages,
+            static function ($pattern) {
+                return is_string($pattern) && $pattern !== '';
+            }
+        ));
+    }
+
+    public function shouldBypassConcurrentLimitForPackage(string $package_name) : bool
+    {
+        // This reuses the same "names" matching as `rules`, so a pattern
+        // prefixed with "!" excludes that package even if it would otherwise
+        // match a wildcard elsewhere in the list, regardless of the order the
+        // patterns are declared in. For example ["vendor/*", "!vendor/legacy"]
+        // bypasses everything from vendor/ except vendor/legacy.
+        $patterns = $this->getConcurrentUpdatesBypassPackages();
+        if (empty($patterns)) {
+            return false;
+        }
+
+        $rule = (object) [
+            'matchRules' => [
+                (object) [
+                    'type' => 'names',
+                    'values' => $patterns,
+                ],
+            ],
+        ];
+
+        return $this->getMatcherFactory()->hasMatches($rule, $package_name);
     }
 
     public function shouldOnlyUpdateSecurityUpdates()
