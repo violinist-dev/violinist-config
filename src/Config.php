@@ -540,6 +540,11 @@ class Config
 
     public function shouldBypassConcurrentLimitForPackage(string $package_name) : bool
     {
+        // This reuses the same "names" matching as `rules`, so a pattern
+        // prefixed with "!" excludes that package even if it would otherwise
+        // match a wildcard elsewhere in the list, regardless of the order the
+        // patterns are declared in. For example ["vendor/*", "!vendor/legacy"]
+        // bypasses everything from vendor/ except vendor/legacy.
         $patterns = $this->getConcurrentUpdatesBypassPackages();
         if (empty($patterns)) {
             return false;

@@ -60,4 +60,42 @@ class ConcurrentUpdatesBypassPackagesTest extends TestCase
         self::assertSame(['vendor/*'], $config->getConcurrentUpdatesBypassPackages());
         self::assertTrue($config->shouldBypassConcurrentLimitForPackage('vendor/package1'));
     }
+
+    public function testNegatedPatternExcludesMatchingPackage(): void
+    {
+        $config = Config::createFromViolinistConfigJsonString(json_encode([
+            'concurrent_updates_bypass_packages' => [
+                'vendor/*',
+                '!vendor/legacy',
+            ],
+        ]));
+
+        self::assertTrue($config->shouldBypassConcurrentLimitForPackage('vendor/package1'));
+        self::assertFalse($config->shouldBypassConcurrentLimitForPackage('vendor/legacy'));
+    }
+
+    public function testNegatedPatternExcludesRegardlessOfOrder(): void
+    {
+        $config = Config::createFromViolinistConfigJsonString(json_encode([
+            'concurrent_updates_bypass_packages' => [
+                '!vendor/legacy',
+                'vendor/*',
+            ],
+        ]));
+
+        self::assertTrue($config->shouldBypassConcurrentLimitForPackage('vendor/package1'));
+        self::assertFalse($config->shouldBypassConcurrentLimitForPackage('vendor/legacy'));
+    }
+
+    public function testNegationAloneDoesNotBypassAnyPackage(): void
+    {
+        $config = Config::createFromViolinistConfigJsonString(json_encode([
+            'concurrent_updates_bypass_packages' => [
+                '!vendor/legacy',
+            ],
+        ]));
+
+        self::assertFalse($config->shouldBypassConcurrentLimitForPackage('vendor/legacy'));
+        self::assertFalse($config->shouldBypassConcurrentLimitForPackage('vendor/other'));
+    }
 }
